@@ -1,23 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 920" role="img" aria-labelledby="gps-title gps-desc">
   <title id="gps-title">Smart Shovel per-event GNSS behavior</title>
-  <desc id="gps-desc">For each detected collection event, the firmware starts with the current GNSS snapshot and independently retains the strongest location, UTC date and time, altitude, and satellite evidence seen during a five-second window. A complete fresh location and UTC fix makes the event ready for FIFO storage without further GNSS waiting. At the deadline, retained evidence becomes ready with its underlying status and a separate gps_wait_timed_out boolean. The actual append may wait behind an older event or unavailable storage. Cases for valid, location-only, stale, and no-fix records are shown.</desc>
+  <desc id="gps-desc">For each detected collection event, the firmware starts with a GNSS snapshot and independently retains the strongest location, UTC date and time, altitude, and satellite data seen during a five-second window. A complete fresh location and UTC fix makes the event ready for FIFO storage immediately. At the deadline, retained data becomes ready with its observed status and a separate gps_wait_timed_out boolean. Cases for valid, location-only, stale, and no-fix records are shown.</desc>
   <defs>
     <marker id="gps-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#31515f"/></marker>
-    <marker id="gps-arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#6d5ba5"/></marker>
     <style>
-      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.section{font-size:23px;font-weight:760}.head{font-size:19px;font-weight:750}.body{font-size:14px}.small{font-size:12px}.label{font-size:11px;font-weight:760;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.warning{fill:#fff4d8;stroke:#a86716;stroke-width:2}.fault{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.neutral{fill:#f1f5f4;stroke:#82979e;stroke-width:1.8}.component{fill:#fbfdfc;stroke:#24755d;stroke-width:1.8}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#gps-arrow)}.future{fill:none;stroke:#6d5ba5;stroke-width:2.3;stroke-dasharray:8 7;marker-end:url(#gps-arrow-purple)}.pill-current{fill:#176f56}.pill-validation{fill:#a63f3b}.pill-provisional{fill:#9a5b0d}.pill-text{fill:#fff;font-size:11px;font-weight:750;letter-spacing:.7px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;fill:#17313c}.yes{fill:#176f56}.no{fill:#a63f3b}.timeline{stroke:#31515f;stroke-width:3}.tick{stroke:#31515f;stroke-width:2}.freeze{fill:#eef3f2;stroke:#cbd8d5;stroke-width:1.4}
+      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.section{font-size:23px;font-weight:760}.head{font-size:19px;font-weight:750}.body{font-size:14px}.small{font-size:12px}.label{font-size:11px;font-weight:760;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.warning{fill:#fff4d8;stroke:#a86716;stroke-width:2}.fault{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.neutral{fill:#f1f5f4;stroke:#82979e;stroke-width:1.8}.component{fill:#fbfdfc;stroke:#24755d;stroke-width:1.8}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#gps-arrow)}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;fill:#17313c}.yes{fill:#176f56}.no{fill:#a63f3b}.timeline{stroke:#31515f;stroke-width:3}.tick{stroke:#31515f;stroke-width:2}.freeze{fill:#eef3f2;stroke:#cbd8d5;stroke-width:1.4}
     </style>
   </defs>
   <rect width="1440" height="920" class="bg"/>
   <g class="text">
-    <text x="48" y="58" class="title ink">Per-event GNSS behavior: retain evidence, preserve status</text>
-    <text x="48" y="88" class="subtitle muted">A five-second wait is bounded; timeout is a separate boolean, not a replacement for the observed fix state.</text>
-    <rect x="1190" y="38" width="202" height="34" rx="17" class="pill-current"/><text x="1291" y="61" text-anchor="middle" class="pill-text">CURRENT FIRMWARE</text>
+    <text x="48" y="58" class="title ink">Per-event GNSS behavior: retain the strongest snapshot</text>
+    <text x="48" y="88" class="subtitle muted">A five-second merge window preserves component validity and records timeout independently</text>
 
     <!-- Evidence flow -->
     <rect x="40" y="120" width="1360" height="364" rx="22" class="panel"/>
     <text x="66" y="158" class="section ink">1 · Build the strongest event snapshot</text>
-    <text x="66" y="184" class="body muted">TinyGPSPlus snapshots may update components at different times. A later incomplete sentence cannot erase better retained evidence.</text>
+    <text x="66" y="184" class="body muted">TinyGPSPlus components may update at different times, so the merge retains the best observation seen for each field.</text>
 
     <rect x="66" y="218" width="220" height="112" rx="18" class="current"/>
     <text x="88" y="247" class="label" fill="#176f56">EVENT DETECTED</text>
@@ -69,7 +67,7 @@
 
     <!-- Cases -->
     <text x="48" y="528" class="section ink">2 · What one schema-v2 row contains</text>
-    <text x="48" y="553" class="body muted">Optional invalid fields are blank. Independently valid pieces may still be present in a degraded row.</text>
+    <text x="48" y="553" class="body muted">Optional fields encode availability while independently valid components remain available to the record.</text>
 
     <rect x="40" y="580" width="326" height="220" rx="20" class="current"/>
     <text x="64" y="612" class="label" fill="#176f56">VALID</text>
@@ -113,10 +111,7 @@
 
     <!-- Semantics footer -->
     <rect x="40" y="828" width="1360" height="64" rx="18" class="freeze"/>
-    <rect x="62" y="847" width="104" height="26" rx="13" class="pill-current"/><text x="114" y="865" text-anchor="middle" class="pill-text">CURRENT</text>
-    <text x="186" y="865" class="body ink">Evidence freezes when selected; FIFO order or unavailable SD may still delay the synchronous append.</text>
-    <rect x="945" y="847" width="184" height="26" rx="13" class="pill-validation"/><text x="1037" y="865" text-anchor="middle" class="pill-text">HARDWARE VALIDATION</text>
-    <text x="1146" y="865" class="small ink">Installed UART/module behavior unverified</text>
-    <text x="186" y="886" class="small muted">UART silence &gt;10 s affects LED/diagnostics, not gps_status by itself. The schema accepts timeout, but current production does not emit it.</text>
+    <text x="62" y="860" class="body ink">Evidence freezes when selected, and FIFO ordering preserves collection sequence through each synchronous append.</text>
+    <text x="62" y="884" class="small muted">UART silence drives LED diagnostics; schema-v2 keeps gps_status and gps_wait_timed_out as independent fields.</text>
   </g>
 </svg>

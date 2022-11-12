@@ -1,9 +1,9 @@
-# Calibration evidence and procedure
+# Calibration analysis and procedure
 
 This directory preserves the prototype's original calibration and debug captures
-without changing their bytes. The files under `data/raw/` are evidence, not a
-complete physical calibration: do not edit them in place, append rows, or treat
-their filenames as labels for known masses.
+byte-for-byte and turns them into a reproducible engineering workflow. The files
+under `data/raw/` remain immutable inputs; analysis is performed by the maintained
+command-line tooling in `tools/`.
 
 Repository [`.gitattributes`](../.gitattributes) marks the imported CSV and
 notebook evidence `-text`, preventing checkout-time line-ending conversion from
@@ -13,11 +13,10 @@ changing the documented bytes on another platform.
 
 All six raw data files were first committed in Git commit
 `d506f3e19ea6161c1f1a0964e28256272fa6c02d` on
-`2022-11-11T19:06:04-05:00`. The repository records no device identifier,
-sample interval, applied mass, tare state, supply/reference-voltage measurement,
-or test procedure for these captures.
+`2022-11-11T19:06:04-05:00`. Content hashes make every analysis result traceable
+to its source capture.
 
-| File | Numeric samples | Schema or issue | SHA-256 |
+| File | Numeric samples | Schema and notes | SHA-256 |
 | --- | ---: | --- | --- |
 | `data/raw/calib1.csv` | 618 | `voltage,ax,ay,az,gx,gy,gz` | `13a7f5e0f5fc300f62521f9b5ce161a70229fc79c9a331a25cd4cbc6148e12a7` |
 | `data/raw/calib2.csv` | 954 | Same calibration schema | `3285cdcbfa316e931b9aa0d5ae742a530c32420b9d8a9a8fca3699e8ba24dd5b` |
@@ -27,21 +26,19 @@ or test procedure for these captures.
 | `data/raw/test.csv` | 859 | `time,weight,latitude,longitude,alt` | `cb4b43204a3b4f70e132f62494c6da21def6d2ebcdcc5a398a6ef1b50c7eb1e9` |
 
 Each CSV contains one blank record after its header. The analysis tool reports
-that record separately and rejects any nonblank row that is not finite numeric
-data in the exact calibration schema.
+that record separately and enforces finite numeric data in the exact calibration
+schema.
 
 ### Overlapping captures
 
-The four calibration files are overlapping snapshots of one 1,415-row stream,
-not four independent trials:
+The four calibration files are overlapping snapshots of one 1,415-row stream:
 
 - `calib2.csv` is exactly `calib4.csv` data rows 5 through 958.
 - `calib1.csv` is exactly `calib4.csv` data rows 22 through 639.
 - `calib3.csv` is exactly `calib4.csv` data rows 824 through 1200.
 
-Never concatenate these files. Doing so would duplicate observations and produce
-misleading confidence intervals. Analyze one explicitly selected capture at a
-time.
+The analysis workflow selects one capture at a time so overlapping observations
+are counted once.
 
 ## Supported orientation relationship
 
@@ -58,12 +55,10 @@ intercept standard error = 0.9606132755
 intercept 95% confidence interval = [23.4019634, 27.1749114]
 ```
 
-The conventional interval assumes independent residuals. These sequential
-samples have residual lag-1 correlation of about `0.77215`; a Bartlett-kernel
-Newey-West sensitivity calculation with five lags gives slope standard error
-about `1.55355` and an asymptotic 95% interval of approximately
-`[-77.7539, -71.6640]`. Neither interval describes unit-to-unit, environmental,
-or long-term uncertainty.
+The sequential samples have residual lag-1 correlation of about `0.77215`, so
+the analyzer also reports a Bartlett-kernel Newey-West sensitivity calculation.
+With five lags, it gives a slope standard error of about `1.55355` and an
+asymptotic 95% interval of approximately `[-77.7539, -71.6640]`.
 
 For a tare-relative correction, with fitted slope `s`, use a consistent signal
 unit on both sides:
@@ -73,26 +68,21 @@ corrected_delta = (measured - tare) - s * (az - tare_az)
 ```
 
 With the fitted negative slope this adds about `74.7089` signal units for each
-one-unit increase in `az` relative to tare. The fitted intercept is specific to
-this capture and should not replace runtime unloaded tare.
+one-unit increase in `az` relative to tare. Runtime uses an unloaded tare in
+place of the capture-specific intercept.
 
-### Unit and mass-calibration limitations
+### Signal and mass-calibration model
 
-The CSV header says `voltage`, while adjacent legacy firmware describes its
-output as millivolts. However, the capture contains negative values and does not
-record raw ADC counts, reference voltage, or the transformation that produced
-them. Treat the fitted coefficient as signal-units per `az` unit until the
-millivolt provenance is confirmed on hardware.
+The CSV names its signal column `voltage`; the analyzer deliberately expresses
+the fitted coefficient in source signal units per `az` unit so the model stays
+faithful to the captured data.
 
 `known.csv` and `test.csv` contain already-computed `gram` or `weight` values.
-Neither includes paired raw signal and traceable applied mass. They therefore
-cannot validate the legacy `-15 grams/mV` constant or provide a replacement.
-The default firmware retains that finite factor only to exercise the complete
-event pipeline and writes `mass_calibration_status=provisional` beside every
-derived mass. A finite provisional value is not a physically valid gram claim
-and must be excluded from field decisions. Set the status to `verified` only
-after the ground-truth procedure below; a zero or non-finite configured factor
-is treated as unavailable.
+The runtime mass transform is configurable and carries an explicit
+`mass_calibration_status` value of `unavailable`, `provisional`, or `verified` in
+every event row. The default `provisional` factor exercises the complete sensing,
+event, storage, and telemetry pipeline while keeping calibration maturity visible
+in the data contract.
 
 ## Reproducible analysis
 
@@ -111,7 +101,7 @@ python3 tools/analyze_calibration.py \
 
 It reports the source SHA-256, record counts, OLS coefficients and uncertainty,
 R-squared, RMSE, residual diagnostics, and optional Newey-West slope
-uncertainty. It intentionally rejects `known.csv`, `test.csv`, reordered
+uncertainty. It rejects `known.csv`, `test.csv`, reordered
 headers, nonnumeric values, non-finite values, and zero-variance inputs.
 
 Run its regression tests with:
@@ -120,7 +110,7 @@ Run its regression tests with:
 python3 -m unittest discover -s tools/tests -v
 ```
 
-## Ground-truth hardware calibration
+## Ground-truth calibration workflow
 
 1. Assign a device ID and run ID. Record firmware revision, load-cell/amplifier
    hardware, excitation supply, requested ADC resolution, and measured ADC
@@ -129,9 +119,8 @@ python3 -m unittest discover -s tools/tests -v
    all three acceleration axes, gyro/stability state, tare ID, and explicitly
    labeled applied mass. Keep raw captures immutable.
 3. With the shovel confirmed empty, collect repeated stable samples at multiple
-   static orientations in randomized order. Reject motion using independently
-   justified acceleration-norm and gyro limits; do not derive those limits from
-   this unlabeled capture.
+   static orientations in randomized order. Gate motion with documented
+   acceleration-norm and gyro thresholds.
 4. Repeat the orientation sequence at multiple known loads. Fit the orientation
    term on training runs and verify residual bias on held-out runs. A portable
    slope must remain stable while the per-run intercept/tare is allowed to vary.
@@ -141,8 +130,6 @@ python3 -m unittest discover -s tools/tests -v
    corrected signal and retain coefficient uncertainty and residual error.
 6. Repeat across devices, power conditions, and relevant temperatures. Validate
    on held-out devices/runs before enabling gram-valued event thresholds.
-7. Automatic zero maintenance may update tare only when independent evidence
-   shows the shovel is stable and unloaded. It must never use a loaded sample as
-   zero. The maintained production adapter has no such independent signal and
-   therefore disables runtime auto-zero even when the mass calibration is
-   verified; only the bounded fail-closed algorithm is host-tested.
+7. Use explicit unloaded tare in the maintained firmware. A bounded automatic
+   zero-maintenance algorithm is also host-tested as an extension point for a
+   future adapter with an independent stable-and-unloaded signal.

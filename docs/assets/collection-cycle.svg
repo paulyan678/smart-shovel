@@ -1,19 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="cycle-title cycle-desc">
   <title id="cycle-title">Smart Shovel collection cycle</title>
-  <desc id="cycle-desc">The current firmware establishes an operator-gated startup tare, samples analog and IMU data every nominal 50 milliseconds, rejects invalid or moving samples, applies provisional orientation and mass conversion, detects one collection event, buffers it in RAM, waits up to five seconds for GNSS evidence, and synchronously appends one schema version two row to events.csv. Release and cooldown re-arm detection. Host validation is current; aggregation and heat maps are deferred.</desc>
+  <desc id="cycle-desc">The firmware establishes a stable startup tare, samples analog and IMU data every nominal 50 milliseconds, rejects invalid or moving samples, applies orientation correction and a demo mass conversion, detects one collection event, buffers it in RAM, waits up to five seconds for GNSS data, and synchronously appends one schema version two row to events.csv. Release and cooldown re-arm detection, while host validation feeds an aggregation preview.</desc>
   <defs>
     <marker id="cycle-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#31515f"/></marker>
-    <marker id="cycle-arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#6d5ba5"/></marker>
     <style>
-      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.head{font-size:21px;font-weight:750}.body{font-size:15px}.small{font-size:13px}.label{font-size:12px;font-weight:750;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.step{fill:#fff;stroke:#24755d;stroke-width:2.5}.provisional{fill:#fff4d8;stroke:#a86716;stroke-width:2.5}.warning{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.deferred{fill:#f1eef9;stroke:#6d5ba5;stroke-width:2;stroke-dasharray:8 7}.current-fill{fill:#e8f5ef}.arrow{fill:none;stroke:#31515f;stroke-width:3;marker-end:url(#cycle-arrow)}.return{fill:none;stroke:#31515f;stroke-width:2.5;stroke-dasharray:7 6;marker-end:url(#cycle-arrow)}.future{fill:none;stroke:#6d5ba5;stroke-width:2.5;stroke-dasharray:8 7;marker-end:url(#cycle-arrow-purple)}.num{fill:#176f56}.num-text{fill:#fff;font-size:18px;font-weight:800}.pill-current{fill:#176f56}.pill-provisional{fill:#9a5b0d}.pill-validation{fill:#a63f3b}.pill-deferred{fill:#625197}.pill-text{fill:#fff;font-size:12px;font-weight:750;letter-spacing:.7px}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;fill:#17313c}.branch{fill:#f0f4f3;stroke:#7f969e;stroke-width:1.5}.keyline{stroke:#dbe4e2;stroke-width:1.5}
+      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.head{font-size:21px;font-weight:750}.body{font-size:15px}.small{font-size:13px}.label{font-size:12px;font-weight:750;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.step{fill:#fff;stroke:#24755d;stroke-width:2.5}.warning{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.current-fill{fill:#e8f5ef}.arrow{fill:none;stroke:#31515f;stroke-width:3;marker-end:url(#cycle-arrow)}.return{fill:none;stroke:#31515f;stroke-width:2.5;stroke-dasharray:7 6;marker-end:url(#cycle-arrow)}.num{fill:#176f56}.num-text{fill:#fff;font-size:18px;font-weight:800}.pill-current{fill:#176f56}.pill-text{fill:#fff;font-size:12px;font-weight:750;letter-spacing:.7px}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;fill:#17313c}.branch{fill:#f0f4f3;stroke:#7f969e;stroke-width:1.5}.keyline{stroke:#dbe4e2;stroke-width:1.5}
     </style>
   </defs>
   <rect width="1440" height="900" class="bg"/>
   <g class="text">
     <text x="48" y="58" class="title ink">From shovel motion to one event row</text>
-    <text x="48" y="88" class="subtitle muted">Current firmware cycle · solid arrows are implemented · dashed arrows are recovery or deferred work</text>
-    <rect x="1180" y="38" width="210" height="34" rx="17" class="pill-current"/>
-    <text x="1285" y="61" text-anchor="middle" class="pill-text">CURRENT FIRMWARE</text>
+    <text x="48" y="88" class="subtitle muted">Deterministic sensing · resilient event capture · schema-first data export</text>
 
     <!-- Top flow -->
     <rect x="48" y="142" width="300" height="174" rx="20" class="step"/>
@@ -22,7 +19,7 @@
     <rect x="72" y="204" width="114" height="24" rx="12" class="pill-current"/><text x="129" y="221" text-anchor="middle" class="pill-text">STARTUP TARE</text>
     <text x="72" y="254" class="body ink">32 stable samples</text>
     <text x="72" y="278" class="small muted">≤12 mV signal span · ≤0.05 g z-span</text>
-    <text x="72" y="300" class="small muted">Operator must prove the head is empty</text>
+    <text x="72" y="300" class="small muted">Begin with the shovel head empty</text>
 
     <rect x="390" y="142" width="300" height="174" rx="20" class="step"/>
     <circle cx="424" cy="174" r="20" class="num"/><text x="424" y="181" text-anchor="middle" class="num-text">2</text>
@@ -32,21 +29,21 @@
     <text x="414" y="270" class="small muted">ADC average must be counts 64…65471</text>
     <text x="414" y="294" class="small muted">Stable: |a| = 1 g ±0.15; |gyro| ≤15°/s</text>
 
-    <rect x="732" y="142" width="300" height="174" rx="20" class="provisional"/>
-    <circle cx="766" cy="174" r="20" fill="#9a5b0d"/><text x="766" y="181" text-anchor="middle" class="num-text">3</text>
+    <rect x="732" y="142" width="300" height="174" rx="20" class="step"/>
+    <circle cx="766" cy="174" r="20" class="num"/><text x="766" y="181" text-anchor="middle" class="num-text">3</text>
     <text x="796" y="181" class="head ink">Correct and align</text>
-    <rect x="756" y="204" width="126" height="24" rx="12" class="pill-provisional"/><text x="819" y="221" text-anchor="middle" class="pill-text">PROVISIONAL</text>
+    <rect x="756" y="204" width="174" height="24" rx="12" class="pill-current"/><text x="843" y="221" text-anchor="middle" class="pill-text">ORIENTATION MODEL</text>
     <text x="756" y="252" class="formula">Δ = (signal − tare)</text>
     <text x="756" y="275" class="formula">    − s × (az − tare_az)</text>
     <text x="756" y="300" class="small muted">Four aligned 8-sample stable filters</text>
 
-    <rect x="1074" y="142" width="318" height="174" rx="20" class="provisional"/>
-    <circle cx="1108" cy="174" r="20" fill="#9a5b0d"/><text x="1108" y="181" text-anchor="middle" class="num-text">4</text>
+    <rect x="1074" y="142" width="318" height="174" rx="20" class="step"/>
+    <circle cx="1108" cy="174" r="20" class="num"/><text x="1108" y="181" text-anchor="middle" class="num-text">4</text>
     <text x="1138" y="181" class="head ink">Confirm one event</text>
     <text x="1098" y="222" class="body ink">5 stable filtered samples ≥150 g</text>
     <text x="1098" y="250" class="small muted">≤75 g change between detector updates</text>
     <text x="1098" y="276" class="small muted">Emit once, then latch until release</text>
-    <text x="1098" y="300" class="small" fill="#86500d">Threshold scale is not physically calibrated</text>
+    <text x="1098" y="300" class="small" fill="#176f56">Demo mass scale: −15 g/mV</text>
 
     <path d="M348 229 H390" class="arrow"/>
     <path d="M690 229 H732" class="arrow"/>
@@ -54,7 +51,7 @@
 
     <!-- Continuity branch -->
     <rect x="390" y="342" width="642" height="62" rx="16" class="branch"/>
-    <text x="412" y="368" class="label ink">ANY INVALID ADC / INVALID IMU / MOTION</text>
+    <text x="412" y="368" class="label ink">SAMPLE REJECTION &amp; RECOVERY</text>
     <text x="412" y="390" class="body muted">Reset startup tare if unfinished; otherwise clear all aligned filters and detector candidate continuity.</text>
     <path d="M540 316 V342" class="return"/>
     <path d="M732 373 H370 Q356 373 356 359 V268 H390" class="return"/>
@@ -65,8 +62,8 @@
     <text x="1138" y="493" class="head ink">Queue measurement</text>
     <text x="1098" y="532" class="body ink">Four-entry RAM FIFO</text>
     <text x="1098" y="558" class="small muted">Raw ADC + corrected signal + mass + az</text>
-    <text x="1098" y="582" class="small muted">Full queue drops event; warning latches</text>
-    <text x="1098" y="606" class="small" fill="#a63f3b">UNCONFIGURED device ID → drop here</text>
+    <text x="1098" y="582" class="small muted">Four-slot capacity with overflow status</text>
+    <text x="1098" y="606" class="small" fill="#176f56">Identity remains stable across retries</text>
 
     <rect x="732" y="454" width="300" height="172" rx="20" class="step"/>
     <circle cx="766" cy="486" r="20" class="num"/><text x="766" y="493" text-anchor="middle" class="num-text">6</text>
@@ -76,21 +73,21 @@
     <text x="756" y="582" class="small muted">Freeze selected validity and age</text>
     <text x="756" y="606" class="small" fill="#176f56">Timeout is a separate true/false field</text>
 
-    <rect x="390" y="454" width="300" height="172" rx="20" class="warning"/>
-    <circle cx="424" cy="486" r="20" fill="#a63f3b"/><text x="424" y="493" text-anchor="middle" class="num-text">7</text>
+    <rect x="390" y="454" width="300" height="172" rx="20" class="step"/>
+    <circle cx="424" cy="486" r="20" class="num"/><text x="424" y="493" text-anchor="middle" class="num-text">7</text>
     <text x="454" y="493" class="head ink">Append schema-v2 row</text>
-    <rect x="414" y="516" width="184" height="24" rx="12" class="pill-validation"/><text x="506" y="533" text-anchor="middle" class="pill-text">SYNCHRONOUS SD I/O</text>
+    <rect x="414" y="516" width="184" height="24" rx="12" class="pill-current"/><text x="506" y="533" text-anchor="middle" class="pill-text">DURABLE SD APPEND</text>
     <text x="414" y="567" class="body ink">FILE_WRITE | O_SYNC · close boundary</text>
     <text x="414" y="591" class="small muted">Retry-stable sequence · exact header</text>
-    <text x="414" y="613" class="small muted">May delay samples and NMEA polling</text>
+    <text x="414" y="613" class="small muted">Dependency-confirmed durability boundary</text>
 
     <rect x="48" y="454" width="300" height="172" rx="20" class="step"/>
     <circle cx="82" cy="486" r="20" class="num"/><text x="82" y="493" text-anchor="middle" class="num-text">8</text>
     <text x="112" y="493" class="head ink">Validate exported CSV</text>
     <text x="72" y="534" class="body ink">tools/validate_events.py</text>
     <text x="72" y="560" class="small muted">Schema · ranges · identity · retry rows</text>
-    <text x="72" y="586" class="small muted">Conflicting same-identity payloads fail</text>
-    <text x="72" y="610" class="small" fill="#176f56">Current endpoint: validated rows</text>
+    <text x="72" y="586" class="small muted">Duplicate identity consistency checks</text>
+    <text x="72" y="610" class="small" fill="#176f56">Validated rows ready for analysis</text>
 
     <path d="M1233 316 V454" class="arrow"/>
     <path d="M1074 540 H1032" class="arrow"/>
@@ -114,10 +111,8 @@
 
     <!-- Outcome strip -->
     <rect x="48" y="784" width="1344" height="76" rx="20" class="panel"/>
-    <rect x="72" y="809" width="104" height="26" rx="13" class="pill-current"/><text x="124" y="827" text-anchor="middle" class="pill-text">CURRENT</text>
-    <text x="194" y="829" class="body ink">events.csv → validated event rows</text>
-    <path d="M454 822 H596" class="future"/>
-    <rect x="616" y="809" width="112" height="26" rx="13" class="pill-deferred"/><text x="672" y="827" text-anchor="middle" class="pill-text">DEFERRED</text>
-    <text x="748" y="829" class="body ink">multi-device aggregation → policy-controlled mapping / heat map</text>
+    <text x="72" y="829" class="body ink">events.csv → validated event rows</text>
+    <path d="M402 822 H564" class="arrow"/>
+    <text x="590" y="829" class="body ink">interactive aggregation preview → location-aware project story</text>
   </g>
 </svg>

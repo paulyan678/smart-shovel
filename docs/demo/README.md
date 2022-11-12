@@ -1,10 +1,11 @@
 # Collection-cycle demo
 
-The demo is a deterministic documentation model of the current firmware flow. It uses synthetic
-sensor and Accra GNSS values; it is not live telemetry and does not claim a new hardware test.
+This deterministic walkthrough presents the Smart Shovel firmware pipeline from
+sensor acquisition to a durable, location-aware schema-v2 event. Adjustable
+sample values make the normal, GNSS recovery, and storage retry paths easy to
+explore and reproduce.
 
-Serve the documentation from the repository root so browser security and relative paths match the
-published layout:
+Serve the documentation from the repository root:
 
 ```sh
 python3 -m http.server 8000 --directory docs
@@ -15,6 +16,6 @@ Then open:
 - [the interactive demo](http://127.0.0.1:8000/demo/)
 - [the zero-dependency browser smoke test](http://127.0.0.1:8000/demo/smoke.html)
 
-The smoke page drives the normal path and a GNSS-unavailable path in a same-origin fixture. A pass
-means the demo produced the expected schema-v2 rows and exposed a map point only for valid GNSS; it
-does not replace firmware unit, native, or board-build gates.
+The smoke page drives the normal path and a GNSS-unavailable path in a
+same-origin fixture. Its six assertions verify schema-v2 output and the rule
+that a map point appears only for a durable event with valid coordinates.

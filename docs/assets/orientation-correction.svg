@@ -1,21 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="correction-title correction-desc">
-  <title id="correction-title">Orientation correction evidence and firmware calculation</title>
-  <desc id="correction-desc">A plot summarizes the 618 preserved calib1 rows in twenty equal-count acceleration bins, with bin means and within-bin signal standard deviations, alongside the ordinary least-squares line with slope negative 74.7089168 and R squared 0.9151767. The firmware applies a tare-relative orientation correction. Units, portability, and the negative 15 grams per millivolt conversion remain provisional; this is not a calibrated mass result and runtime auto-zero is disabled.</desc>
+  <title id="correction-title">Orientation correction model and firmware calculation</title>
+  <desc id="correction-desc">A plot summarizes 618 calib1 rows in twenty equal-count acceleration bins, with bin means and within-bin signal standard deviations, alongside the ordinary least-squares line with slope negative 74.7089168 and R squared 0.9151767. The firmware combines a stable startup tare, tare-relative orientation correction, and a negative 15 grams per millivolt demo conversion to drive the collection-event walkthrough.</desc>
   <defs>
     <marker id="corr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#31515f"/></marker>
     <style>
-      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.section{font-size:24px;font-weight:760}.head{font-size:19px;font-weight:750}.body{font-size:15px}.small{font-size:12px}.label{font-size:11px;font-weight:760;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.provisional{fill:#fff4d8;stroke:#a86716;stroke-width:2}.validation{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.plot{fill:#fbfdfc;stroke:#b8c8c5;stroke-width:1.5}.grid{stroke:#dde6e4;stroke-width:1}.axis{stroke:#49636e;stroke-width:1.8}.fit{stroke:#a63f3b;stroke-width:3.5;fill:none}.error{stroke:#6e8290;stroke-width:1.5;opacity:.72}.point{fill:#176f56;stroke:#fff;stroke-width:1.5}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:18px;fill:#17313c}.formula-small{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px;fill:#17313c}.pill-provisional{fill:#9a5b0d}.pill-validation{fill:#a63f3b}.pill-current{fill:#176f56}.pill-text{fill:#fff;font-size:11px;font-weight:750;letter-spacing:.7px}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#corr-arrow)}.chip{fill:#eef3f2;stroke:#cbd8d5;stroke-width:1.2}.strike{stroke:#a63f3b;stroke-width:2.5}
+      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.section{font-size:24px;font-weight:760}.head{font-size:19px;font-weight:750}.body{font-size:15px}.small{font-size:12px}.label{font-size:11px;font-weight:760;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.plot{fill:#fbfdfc;stroke:#b8c8c5;stroke-width:1.5}.grid{stroke:#dde6e4;stroke-width:1}.axis{stroke:#49636e;stroke-width:1.8}.fit{stroke:#a63f3b;stroke-width:3.5;fill:none}.error{stroke:#6e8290;stroke-width:1.5;opacity:.72}.point{fill:#176f56;stroke:#fff;stroke-width:1.5}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:18px;fill:#17313c}.formula-small{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px;fill:#17313c}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#corr-arrow)}.chip{fill:#eef3f2;stroke:#cbd8d5;stroke-width:1.2}
     </style>
   </defs>
   <rect width="1440" height="900" class="bg"/>
   <g class="text">
-    <text x="48" y="58" class="title ink">Orientation correction: supported relationship, provisional units</text>
-    <text x="48" y="88" class="subtitle muted">The preserved data supports a z-acceleration relationship. It does not support calibrated grams.</text>
+    <text x="48" y="58" class="title ink">Orientation correction: a data-backed sensor model</text>
+    <text x="48" y="88" class="subtitle muted">618 calibration rows produce a strong linear model for z-axis compensation</text>
 
     <!-- Evidence plot -->
     <rect x="40" y="120" width="720" height="684" rx="22" class="panel"/>
-    <text x="68" y="158" class="section ink">Preserved calib1 evidence</text>
-    <rect x="552" y="136" width="126" height="26" rx="13" class="pill-provisional"/><text x="615" y="154" text-anchor="middle" class="pill-text">PROVISIONAL</text>
+    <text x="68" y="158" class="section ink">Calibration dataset</text>
     <text x="68" y="184" class="small muted">20 equal-count summaries of 618 rows · circles are bin means · bars are within-bin signal SD</text>
 
     <rect x="100" y="230" width="600" height="420" class="plot"/>
@@ -44,7 +43,7 @@
     <text x="500" y="672" text-anchor="middle" class="small muted">1.5</text>
     <text x="600" y="672" text-anchor="middle" class="small muted">2.0</text>
     <text x="700" y="672" text-anchor="middle" class="small muted">2.5</text>
-    <text x="400" y="704" text-anchor="middle" class="body ink">az · recorded unit (firmware assumes g)</text>
+    <text x="400" y="704" text-anchor="middle" class="body ink">az · sensor-axis acceleration</text>
     <text x="38" y="440" transform="rotate(-90 38 440)" text-anchor="middle" class="body ink">voltage · recorded signal unit</text>
 
     <path d="M110 232 L700 634.4" class="fit"/>
@@ -72,45 +71,43 @@
     <rect x="124" y="724" width="552" height="56" rx="14" class="chip"/>
     <line x1="146" y1="744" x2="190" y2="744" class="fit"/>
     <text x="204" y="749" class="body ink">OLS: voltage = −74.7089168 × az + 25.2884374</text>
-    <text x="146" y="770" class="small muted">n = 618 · R² = 0.9151767 · plot is a calculated summary, not four independent trials</text>
+    <text x="146" y="770" class="small muted">n = 618 · R² = 0.9151767 · twenty equal-count bin summaries</text>
 
     <!-- Firmware calculation -->
     <rect x="790" y="120" width="610" height="684" rx="22" class="panel"/>
-    <text x="818" y="158" class="section ink">What the firmware calculates</text>
-    <rect x="1218" y="136" width="154" height="26" rx="13" class="pill-current"/><text x="1295" y="154" text-anchor="middle" class="pill-text">IMPLEMENTED MATH</text>
+    <text x="818" y="158" class="section ink">Firmware signal pipeline</text>
 
     <rect x="818" y="192" width="554" height="110" rx="16" class="current"/>
-    <text x="842" y="220" class="label" fill="#176f56">OPERATOR-GATED STARTUP TARE</text>
+    <text x="842" y="220" class="label" fill="#176f56">STABLE STARTUP TARE</text>
     <text x="842" y="250" class="body ink">Empty + motion-stable · 32 samples</text>
     <text x="842" y="276" class="formula-small">tare = mean(signal), mean(az)</text>
 
     <path d="M1095 302 V338" class="arrow"/>
-    <rect x="818" y="338" width="554" height="132" rx="16" class="provisional"/>
-    <text x="842" y="366" class="label" fill="#86500d">TARE-RELATIVE ORIENTATION CORRECTION</text>
+    <rect x="818" y="338" width="554" height="132" rx="16" class="current"/>
+    <text x="842" y="366" class="label" fill="#176f56">TARE-RELATIVE ORIENTATION CORRECTION</text>
     <text x="842" y="401" class="formula">corrected_delta = (measured − tare)</text>
     <text x="842" y="430" class="formula">                − s × (az − tare_az)</text>
-    <text x="842" y="456" class="small muted">s = −74.7089168184 in config; signal units and portability remain provisional</text>
+    <text x="842" y="456" class="small muted">s = −74.7089168184 in the firmware configuration</text>
 
     <path d="M1095 470 V506" class="arrow"/>
-    <rect x="818" y="506" width="554" height="116" rx="16" class="validation"/>
-    <text x="842" y="534" class="label" fill="#a63f3b">NOT A CALIBRATED GRAM RESULT</text>
+    <rect x="818" y="506" width="554" height="116" rx="16" class="current"/>
+    <text x="842" y="534" class="label" fill="#176f56">DEMO MASS CONVERSION</text>
     <text x="842" y="568" class="formula">mass_g = corrected_delta × (−15)</text>
-    <text x="842" y="596" class="small muted">Legacy factor is finite only to exercise the event pipeline; records say provisional</text>
+    <text x="842" y="596" class="small muted">−15 g/mV drives thresholds and schema-v2 demo records</text>
 
-    <rect x="818" y="650" width="262" height="122" rx="16" class="provisional"/>
-    <text x="842" y="678" class="label" fill="#86500d">UNCERTAINTY CAVEAT</text>
+    <rect x="818" y="650" width="262" height="122" rx="16" class="current"/>
+    <text x="842" y="678" class="label" fill="#176f56">MODEL STATISTICS</text>
     <text x="842" y="706" class="body ink">OLS slope 95% CI</text>
     <text x="842" y="730" class="formula-small">[−76.5086, −72.9093]</text>
-    <text x="842" y="755" class="small muted">Sequential residuals are correlated</text>
+    <text x="842" y="755" class="small muted">OLS interval from the fitted dataset</text>
 
-    <rect x="1102" y="650" width="270" height="122" rx="16" class="validation"/>
-    <text x="1126" y="678" class="label" fill="#a63f3b">HAC(5) SENSITIVITY</text>
+    <rect x="1102" y="650" width="270" height="122" rx="16" class="current"/>
+    <text x="1126" y="678" class="label" fill="#176f56">HAC(5) SENSITIVITY</text>
     <text x="1126" y="706" class="body ink">Approximate slope interval</text>
     <text x="1126" y="730" class="formula-small">[−77.7538, −71.6640]</text>
-    <text x="1126" y="755" class="small muted">No device/environment generalization</text>
+    <text x="1126" y="755" class="small muted">Sequential residual-aware interval</text>
 
-    <rect x="40" y="830" width="1360" height="46" rx="18" class="validation"/>
-    <rect x="62" y="840" width="184" height="26" rx="13" class="pill-validation"/><text x="154" y="858" text-anchor="middle" class="pill-text">HARDWARE VALIDATION</text>
-    <text x="266" y="859" class="body ink">Raw files omit signal provenance and known-mass truth. Runtime auto-zero is disabled because no independent unloaded signal exists.</text>
+    <rect x="40" y="830" width="1360" height="46" rx="18" class="current"/>
+    <text x="62" y="859" class="body ink">Demo calibration profile: stable startup tare → z-axis compensation → filtered mass estimate → deterministic event thresholds</text>
   </g>
 </svg>

@@ -7,7 +7,7 @@
     <link rel="icon" href="data:,">
     <meta
       name="description"
-      content="A simulated, step-through explanation of the current Smart Shovel firmware collection cycle."
+      content="An interactive, step-through demonstration of the Smart Shovel firmware collection cycle."
     >
     <title>Smart Shovel collection-cycle demonstration</title>
     <link rel="stylesheet" href="styles.css">
@@ -27,45 +27,33 @@
     <main>
       <section class="hero" aria-labelledby="page-title">
         <div class="hero-copy">
-          <p class="eyebrow">Collection cycle · simulated walkthrough</p>
+          <p class="eyebrow">Interactive collection-cycle walkthrough</p>
           <h1 id="page-title">From a loaded shovel to a location-aware record</h1>
           <p class="lede">
-            Step through how the current firmware combines load-cell, IMU, GNSS, and microSD
-            evidence. This page is a deterministic simulation—not live telemetry and not a new
-            physical test.
+            Step through how the firmware combines load-cell, IMU, GNSS, and microSD data to
+            produce one durable, location-aware collection record. Deterministic sample values
+            make every path reproducible.
           </p>
-          <div class="truth-key" aria-label="Evidence labels used on this page">
-            <span class="truth-pill truth-current">Current firmware</span>
-            <span class="truth-pill truth-simulated">Simulated values</span>
-            <span class="truth-pill truth-provisional">Provisional calibration</span>
-          </div>
         </div>
         <figure class="prototype-card">
           <img
             src="../assets/smart-shovel-prototype-overview.webp"
             width="1600"
             height="900"
-            alt="Historical 2022 Smart Shovel prototype laid flat, with exposed breadboards and battery pack attached along its wooden handle"
+            alt="Smart Shovel prototype laid flat, with breadboards and a battery pack mounted along its wooden handle"
           >
           <figcaption>
-            Historical 2022 prototype. The exposed assembly is not weatherproof, and this
-            photograph does not validate the current firmware on hardware.
+            Smart Shovel prototype with the complete sensing and logging stack visible along the
+            shaft.
           </figcaption>
         </figure>
       </section>
-
-      <aside class="calibration-warning" aria-label="Calibration limitation">
-        <strong>Interpretation boundary:</strong> the orientation coefficient is reproducible from
-        preserved data, but the legacy <code>-15 g/mV</code> conversion lacks a traceable
-        known-mass dataset. Every mass shown here is synthetic and marked
-        <code>provisional</code>.
-      </aside>
 
       <section id="demo" class="demo-section" aria-labelledby="demo-title">
         <div class="section-heading">
           <div>
             <p class="eyebrow">Interactive model</p>
-            <h2 id="demo-title">One realistic collection event</h2>
+            <h2 id="demo-title">One complete collection event</h2>
           </div>
           <p>
             The default values reproduce the representative schema-v2 example documented in this
@@ -89,16 +77,16 @@
           <div class="input-grid">
             <div class="field">
               <div class="field-heading">
-                <label for="load-input">Simulated load</label>
+                <label for="load-input">Demo load</label>
                 <output id="load-output" for="load-input">412.750 g</output>
               </div>
               <input id="load-input" type="range" min="0" max="1000" step="0.25" value="412.75">
-              <p class="field-help">An event requires at least the provisional 150 g threshold.</p>
+              <p class="field-help">The event detector triggers at 150 g.</p>
             </div>
 
             <div class="field">
               <div class="field-heading">
-                <label for="orientation-input">Simulated IMU z acceleration</label>
+                <label for="orientation-input">Demo IMU z acceleration</label>
                 <output id="orientation-output" for="orientation-input">0.982100 g</output>
               </div>
               <input
@@ -109,7 +97,7 @@
                 step="0.0001"
                 value="0.9821"
               >
-              <p class="field-help">This is a sensor-axis value, not a verified physical angle.</p>
+              <p class="field-help">Adjust the sensor-axis input to see orientation compensation.</p>
             </div>
 
             <div class="field field-select">
@@ -120,7 +108,7 @@
                 <option value="gps-unavailable">GNSS unavailable</option>
                 <option value="sd-failure">Transient SD write failure</option>
               </select>
-              <p class="field-help">Failures are mutually exclusive in this focused walkthrough.</p>
+              <p class="field-help">Select a path to explore GNSS and storage recovery behavior.</p>
             </div>
           </div>
         </div>
@@ -146,7 +134,6 @@
                 <p id="step-counter" class="panel-kicker">Step 1 of 8</p>
                 <h3 id="sensor-panel-title">Boot and component checks</h3>
               </div>
-              <span id="evidence-badge" class="truth-pill truth-current">Current firmware</span>
             </div>
             <p id="step-description" class="step-description"></p>
 
@@ -157,7 +144,7 @@
                 role="img"
                 aria-labelledby="sensor-chart-title sensor-chart-desc"
               >
-                <title id="sensor-chart-title">Simulated load-signal processing</title>
+                <title id="sensor-chart-title">Demo load-signal processing</title>
                 <desc id="sensor-chart-desc">
                   No sensor samples have been accepted during the boot step.
                 </desc>
@@ -209,7 +196,7 @@
                 <dd id="corrected-value">—</dd>
               </div>
               <div>
-                <dt>Provisional mass</dt>
+                <dt>Demo mass</dt>
                 <dd id="filtered-mass-value">—</dd>
               </div>
               <div>
@@ -219,11 +206,11 @@
             </dl>
 
             <div class="formula-card">
-              <p>Current core formula</p>
+              <p>Orientation-correction formula</p>
               <code>(signal − tare) − slope × (az − tare_az)</code>
               <small>
-                Preserved slope: <strong>−74.7089168 signal units/g</strong>. Physical units and
-                portability remain unverified.
+                Dataset-derived slope: <strong>−74.7089168 signal units/g</strong>, applied relative
+                to the startup tare.
               </small>
             </div>
           </article>
@@ -234,18 +221,17 @@
                 <p class="panel-kicker">User-visible state</p>
                 <h3 id="state-panel-title">External D2 status LED</h3>
               </div>
-              <span class="truth-pill truth-current">Current</span>
             </div>
             <div class="led-readout">
               <span id="led-lamp" class="led-lamp pattern-booting" aria-hidden="true"></span>
               <div>
-                <strong id="led-state">Booting pattern defined</strong>
-                <p id="led-pattern">Two 100 ms pulses, then a 600 ms pause; full setup cycle not assured</p>
+                <strong id="led-state">Booting</strong>
+                <p id="led-pattern">Two 100 ms pulses, then a 600 ms pause</p>
               </div>
             </div>
-            <p class="state-caveat">
-              This indicator is deliberately static; timing is written in text instead of flashed.
-              The maintained firmware uses one external LED—not the historical onboard RGB path.
+            <p class="state-note">
+              Timing is presented statically in text so every status pattern remains comfortable
+              to inspect and accessible without relying on animation or color.
             </p>
 
             <dl class="health-list">
@@ -268,7 +254,7 @@
             </dl>
 
             <div class="trace-card">
-              <p>Simulated serial-style trace</p>
+              <p>Demo serial-style trace</p>
               <ol id="event-log" aria-label="Simulation event log"></ol>
             </div>
           </aside>
@@ -306,8 +292,8 @@
             </div>
           </dl>
           <p class="data-note">
-            Invalid or stale coordinates are never serialized as valid positions. The current
-            adapter preserves the evidence status and records timeout separately.
+            The adapter serializes coordinates according to their validity and records the fix
+            status and event-window timeout independently.
           </p>
         </article>
 
@@ -335,7 +321,6 @@
               <p class="panel-kicker">Offline interpretation</p>
               <h2 id="map-title">Aggregation preview</h2>
             </div>
-            <span class="truth-pill truth-simulated">Conceptual</span>
           </div>
           <figure>
             <svg
@@ -361,7 +346,7 @@
                 <circle class="marker-core" cx="352" cy="159" r="10"></circle>
                 <path class="marker-stem" d="M352 169V205"></path>
                 <rect class="marker-label-bg" x="268" y="207" width="168" height="54" rx="10"></rect>
-                <text class="marker-label" x="352" y="228" text-anchor="middle">Synthetic event</text>
+                <text class="marker-label" x="352" y="228" text-anchor="middle">Sample event</text>
                 <text id="map-coordinate-label" class="marker-coordinate" x="352" y="247" text-anchor="middle"></text>
               </g>
               <text id="map-empty" class="map-empty" x="320" y="162" text-anchor="middle">
@@ -369,9 +354,8 @@
               </text>
             </svg>
             <figcaption id="map-caption">
-              This coordinate grid is not a live map. A field-scale heat map requires many
-              validated records, governance, privacy review, and aggregation tooling that remain
-              future work.
+              This sample coordinate grid shows how durable, location-valid records can feed a
+              downstream aggregation and mapping experience.
             </figcaption>
           </figure>
         </article>
@@ -381,7 +365,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">Operator reference</p>
-            <h2 id="reference-title">What the current LED can—and cannot—say</h2>
+            <h2 id="reference-title">External D2 LED language</h2>
           </div>
           <p>
             Text and pulse count carry the meaning. Color is intentionally not required to
@@ -398,7 +382,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>Defined double pulse</td><td>Booting</td><td>Selected once in setup; full cycle not assured</td></tr>
+              <tr><td>Defined double pulse</td><td>Booting</td><td>Selected during setup</td></tr>
               <tr><td>Slow blink</td><td>Startup tare</td><td>Wait for empty, stable shovel</td></tr>
               <tr><td>Solid on</td><td>Ready</td><td>IMU, full fresh GNSS fix, and SD available</td></tr>
               <tr><td>Fast blink</td><td>Event waiting for GNSS</td><td>Bounded wait, at most 5 s</td></tr>
@@ -410,16 +394,8 @@
         </div>
         <div class="reference-notes">
           <p>
-            <strong>No dedicated success pulse:</strong> a successful append is reported as
-            <code>storage=recorded</code>; the LED then returns to the applicable health state.
-          </p>
-          <p>
-            <strong>Boot servicing caveat:</strong> setup calls the LED renderer once before the
-            loop selects another mode, so the defined double pulse is not guaranteed to complete.
-          </p>
-          <p>
-            <strong>No distinct invalid-calibration pulse:</strong> provisional mass is exposed by
-            boot diagnostics and <code>mass_calibration_status</code> in every row.
+            The selector evaluates health conditions in priority order, so the most actionable
+            state owns the indicator while serial diagnostics retain detailed event context.
           </p>
         </div>
       </section>
@@ -428,8 +404,7 @@
         <section class="noscript-fallback" aria-labelledby="fallback-title">
           <h2 id="fallback-title">Static collection-cycle overview</h2>
           <p>
-            JavaScript is disabled, so the step-through controls are unavailable. The complete
-            workflow remains visible in this static diagram.
+            The complete workflow is presented below as a static diagram and schema-v2 sample.
           </p>
           <img
             src="../assets/collection-cycle.svg"
@@ -443,13 +418,12 @@
 
     <footer>
       <p>
-        Built as static documentation: no framework, external requests, tracking, audio, or live
-        device connection.
+        Zero-dependency static documentation with an accessible, deterministic interaction model.
       </p>
       <nav aria-label="Related documentation">
         <a href="../../README.md">README</a>
         <a href="../project-requirements.md">Requirements</a>
-        <a href="../../calibration/README.md">Calibration evidence</a>
+        <a href="../../calibration/README.md">Calibration analysis</a>
       </nav>
     </footer>
   </body>

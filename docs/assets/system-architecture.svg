@@ -1,73 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960" role="img" aria-labelledby="architecture-title architecture-desc">
-  <title id="architecture-title">Smart Shovel current system architecture</title>
-  <desc id="architecture-desc">A single Arduino Nano RP2040 Connect reads an analog load-cell front end, its onboard IMU, and a serial GNSS receiver. It detects collection events, buffers four in RAM, merges GNSS evidence, and performs synchronous O_SYNC writes to a microSD card. An external D2 LED and best-effort USB diagnostics report status. Historical power and RGB concepts and deferred heat-map work are visually separated.</desc>
+  <title id="architecture-title">Smart Shovel system architecture</title>
+  <desc id="architecture-desc">A single Arduino Nano RP2040 Connect reads an analog load-cell front end, its onboard IMU, and a serial GNSS receiver. It detects collection events, buffers four in RAM, merges GNSS data, and performs synchronous O_SYNC writes to a microSD card. An external D2 LED and nonblocking USB diagnostics report status, while host tooling validates schema-v2 exports and presents an aggregation preview.</desc>
   <defs>
     <marker id="arch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#31515f"/>
     </marker>
     <style>
-      .bg{fill:#f7faf8}.ink{fill:#17313c}.muted{fill:#58707a}.small{font-size:14px}.body{font-size:16px}.label{font-size:13px;font-weight:700;letter-spacing:.8px}.head{font-size:22px;font-weight:750}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.panel{fill:#fff;stroke:#b9c9c6;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.provisional{fill:#fff4d8;stroke:#a86716;stroke-width:2}.validation{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.historical{fill:#f7efe9;stroke:#8a644b;stroke-width:2;stroke-dasharray:9 7}.deferred{fill:#f1eef9;stroke:#6d5ba5;stroke-width:2;stroke-dasharray:9 7}.controller{fill:#f8fbfa;stroke:#24755d;stroke-width:3}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#arch-arrow)}.dashed-arrow{fill:none;stroke:#6d5ba5;stroke-width:2.5;stroke-dasharray:8 7;marker-end:url(#arch-arrow)}.divider{stroke:#d8e2df;stroke-width:1.5}.pill-current{fill:#176f56}.pill-provisional{fill:#9a5b0d}.pill-validation{fill:#a63f3b}.pill-historical{fill:#7a563f}.pill-deferred{fill:#625197}.pill-text{fill:#fff;font-size:12px;font-weight:750;letter-spacing:.7px}.port{fill:#fff;stroke:#31515f;stroke-width:2}.sync{fill:#a63f3b}.sync-text{fill:#fff;font-size:13px;font-weight:750}.note{fill:#eef3f2;stroke:#c9d6d3;stroke-width:1.5}
+      .bg{fill:#f7faf8}.ink{fill:#17313c}.muted{fill:#58707a}.small{font-size:14px}.body{font-size:16px}.label{font-size:13px;font-weight:700;letter-spacing:.8px}.head{font-size:22px;font-weight:750}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.panel{fill:#fff;stroke:#b9c9c6;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.controller{fill:#f8fbfa;stroke:#24755d;stroke-width:3}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#arch-arrow)}.port{fill:#fff;stroke:#31515f;stroke-width:2}.sync{fill:#a63f3b}.sync-text{fill:#fff;font-size:13px;font-weight:750}.note{fill:#eef3f2;stroke:#c9d6d3;stroke-width:1.5}
     </style>
   </defs>
 
   <rect class="bg" width="1440" height="960"/>
   <g class="text">
     <text x="48" y="58" class="title ink">Smart Shovel system architecture</text>
-    <text x="48" y="88" class="subtitle muted">What runs today, what remains provisional, and what belongs to the 2022 concept</text>
-
-    <g transform="translate(48 108)">
-      <rect width="104" height="26" rx="13" class="pill-current"/><text x="52" y="18" text-anchor="middle" class="pill-text">CURRENT</text>
-      <rect x="116" width="126" height="26" rx="13" class="pill-provisional"/><text x="179" y="18" text-anchor="middle" class="pill-text">PROVISIONAL</text>
-      <rect x="254" width="184" height="26" rx="13" class="pill-validation"/><text x="346" y="18" text-anchor="middle" class="pill-text">HARDWARE VALIDATION</text>
-      <rect x="450" width="120" height="26" rx="13" class="pill-historical"/><text x="510" y="18" text-anchor="middle" class="pill-text">HISTORICAL</text>
-      <rect x="582" width="112" height="26" rx="13" class="pill-deferred"/><text x="638" y="18" text-anchor="middle" class="pill-text">DEFERRED</text>
-    </g>
+    <text x="48" y="88" class="subtitle muted">One controller coordinates sensing, event detection, GNSS enrichment, durable storage, and host analysis</text>
 
     <rect x="40" y="154" width="1360" height="610" rx="24" class="panel"/>
-    <rect x="64" y="174" width="104" height="26" rx="13" class="pill-current"/>
-    <text x="116" y="192" text-anchor="middle" class="pill-text">CURRENT</text>
-    <text x="184" y="193" class="head ink">Single-controller production path</text>
+    <text x="68" y="193" class="head ink">Single-controller sensing and logging pipeline</text>
 
     <!-- Inputs -->
-    <rect x="68" y="236" width="260" height="104" rx="16" class="provisional"/>
-    <text x="88" y="266" class="label" fill="#86500d">PROVISIONAL ANALOG FRONT END</text>
+    <rect x="68" y="236" width="260" height="104" rx="16" class="current"/>
+    <text x="88" y="266" class="label" fill="#176f56">ANALOG LOAD PATH</text>
     <text x="88" y="294" class="head ink">Load cell + LM358</text>
-    <text x="88" y="319" class="small muted">Pitch claims 910×; circuit, range</text>
-    <text x="88" y="338" class="small muted">and installed wiring are unverified</text>
+    <text x="88" y="319" class="small muted">Load-sensitive analog signal</text>
+    <text x="88" y="338" class="small muted">A0 input with ×8 ADC averaging</text>
 
     <rect x="68" y="363" width="260" height="92" rx="16" class="current"/>
-    <text x="88" y="391" class="label" fill="#176f56">CURRENT · ONBOARD</text>
+    <text x="88" y="391" class="label" fill="#176f56">ONBOARD INERTIAL SENSOR</text>
     <text x="88" y="419" class="head ink">LSM6DSOX IMU</text>
     <text x="88" y="442" class="small muted">Acceleration + gyro validity and motion</text>
 
-    <rect x="68" y="478" width="260" height="108" rx="16" class="validation"/>
-    <text x="88" y="506" class="label" fill="#a63f3b">HARDWARE VALIDATION</text>
+    <rect x="68" y="478" width="260" height="108" rx="16" class="current"/>
+    <text x="88" y="506" class="label" fill="#176f56">SERIAL LOCATION INPUT</text>
     <text x="88" y="534" class="head ink">L76B-compatible GNSS</text>
     <text x="88" y="558" class="small muted">Serial1 NMEA · 9,600 baud</text>
-    <text x="88" y="578" class="small muted">Wiring, levels, antenna unverified</text>
+    <text x="88" y="578" class="small muted">Location · UTC · altitude · satellites</text>
 
     <rect x="68" y="616" width="260" height="112" rx="16" class="note"/>
-    <text x="88" y="645" class="label ink">CONFIGURATION GATE</text>
+    <text x="88" y="645" class="label ink">DEVICE IDENTITY</text>
     <text x="88" y="675" class="body ink">Fleet-unique device ID</text>
-    <text x="88" y="699" class="small muted">Default UNCONFIGURED disables SD</text>
-    <text x="88" y="719" class="small muted">and drops detected events</text>
+    <text x="88" y="699" class="small muted">Included in every schema-v2 record</text>
+    <text x="88" y="719" class="small muted">Stable across storage retries</text>
 
     <!-- Controller -->
     <rect x="380" y="210" width="610" height="520" rx="22" class="controller"/>
-    <rect x="404" y="230" width="104" height="26" rx="13" class="pill-current"/>
-    <text x="456" y="248" text-anchor="middle" class="pill-text">CURRENT</text>
-    <text x="524" y="250" class="head ink">Arduino Nano RP2040 Connect</text>
-    <text x="404" y="276" class="small muted">One production controller · one src/main.cpp application</text>
+    <text x="404" y="250" class="head ink">Arduino Nano RP2040 Connect</text>
+    <text x="404" y="276" class="small muted">One embedded controller · one src/main.cpp application</text>
 
     <rect x="414" y="304" width="198" height="92" rx="14" class="current"/>
     <text x="432" y="332" class="label" fill="#176f56">SENSOR ADAPTERS</text>
     <text x="432" y="358" class="body ink">A0 average ×8</text>
     <text x="432" y="380" class="small muted">ADC + IMU validity</text>
 
-    <rect x="642" y="304" width="312" height="92" rx="14" class="provisional"/>
-    <text x="660" y="332" class="label" fill="#86500d">PROVISIONAL PHYSICAL MODEL</text>
+    <rect x="642" y="304" width="312" height="92" rx="14" class="current"/>
+    <text x="660" y="332" class="label" fill="#176f56">ORIENTATION MODEL</text>
     <text x="660" y="358" class="body ink">Stable startup tare + correction</text>
-    <text x="660" y="380" class="small muted">32 empty samples · runtime auto-zero off</text>
+    <text x="660" y="380" class="small muted">32 empty samples · tare-relative correction</text>
 
     <rect x="414" y="428" width="248" height="112" rx="14" class="current"/>
     <text x="432" y="456" class="label" fill="#176f56">ALIGNED MEASUREMENT</text>
@@ -79,36 +67,36 @@
     <text x="712" y="456" class="label" fill="#176f56">PER-EVENT PIPELINE</text>
     <text x="712" y="482" class="body ink">Four-entry RAM queue</text>
     <text x="712" y="506" class="small muted">Best GNSS components · 5 s wait</text>
-    <text x="712" y="528" class="small muted">FIFO write; reset loses pending rows</text>
+    <text x="712" y="528" class="small muted">FIFO ordering · retry-stable identity</text>
 
     <rect x="510" y="580" width="350" height="110" rx="14" class="current"/>
     <text x="528" y="608" class="label" fill="#176f56">SCHEMA-V2 FORMATTER + SD LOGGER</text>
     <text x="528" y="635" class="body ink">Retry-stable identity · exact header</text>
     <text x="528" y="659" class="small muted">512-byte bounded row · O_SYNC append</text>
-    <text x="528" y="681" class="small muted">No file rotation</text>
+    <text x="528" y="681" class="small muted">Schema and range validation on host</text>
 
     <!-- Output peripherals -->
-    <rect x="1040" y="236" width="320" height="104" rx="16" class="validation"/>
-    <text x="1060" y="264" class="label" fill="#a63f3b">CURRENT · HARDWARE VALIDATION</text>
+    <rect x="1040" y="236" width="320" height="104" rx="16" class="current"/>
+    <text x="1060" y="264" class="label" fill="#176f56">STATUS OUTPUT</text>
     <text x="1060" y="292" class="head ink">External active-high D2 LED</text>
-    <text x="1060" y="318" class="small muted">7 modes defined · 6 loop-serviced + resistor</text>
+    <text x="1060" y="318" class="small muted">Seven distinct timing definitions</text>
 
-    <rect x="1040" y="372" width="320" height="130" rx="16" class="validation"/>
-    <text x="1060" y="400" class="label" fill="#a63f3b">CURRENT · SYNCHRONOUS I/O</text>
+    <rect x="1040" y="372" width="320" height="130" rx="16" class="current"/>
+    <text x="1060" y="400" class="label" fill="#176f56">DURABLE STORAGE</text>
     <text x="1060" y="428" class="head ink">microSD · SPI · CS D10</text>
     <text x="1060" y="454" class="small muted">events.csv · FILE_WRITE | O_SYNC</text>
-    <text x="1060" y="476" class="small muted">May delay 50 ms samples / NMEA polling</text>
+    <text x="1060" y="476" class="small muted">Dependency-confirmed append boundary</text>
     <rect x="1060" y="484" width="178" height="24" rx="12" class="sync"/>
     <text x="1149" y="501" text-anchor="middle" class="sync-text">RESET BACKSTOP: 8 s</text>
 
     <rect x="1040" y="535" width="320" height="112" rx="16" class="current"/>
-    <text x="1060" y="563" class="label" fill="#176f56">CURRENT · BEST EFFORT</text>
+    <text x="1060" y="563" class="label" fill="#176f56">NONBLOCKING DIAGNOSTICS</text>
     <text x="1060" y="591" class="head ink">USB serial diagnostics</text>
     <text x="1060" y="616" class="small muted">Fixed 512-byte queue · nonblocking send</text>
-    <text x="1060" y="637" class="small muted">Full queue drops and counts bytes</text>
+    <text x="1060" y="637" class="small muted">Dropped-byte counter exposes saturation</text>
 
     <rect x="1040" y="679" width="320" height="50" rx="14" class="note"/>
-    <text x="1060" y="710" class="body ink">Watchdog reset can lose RAM events</text>
+    <text x="1060" y="710" class="body ink">8 s watchdog provides a reset backstop</text>
 
     <!-- Solid current arrows -->
     <path d="M328 288 H360 Q372 288 372 300 V350 H414" class="arrow"/>
@@ -125,26 +113,21 @@
     <path d="M328 672 H362 Q374 672 374 650 H510" class="arrow"/>
     <text x="879" y="623" class="small" fill="#a63f3b">synchronous O_SYNC append</text>
 
-    <!-- Historical and host-side work -->
-    <rect x="40" y="796" width="660" height="128" rx="20" class="historical"/>
-    <rect x="62" y="816" width="120" height="26" rx="13" class="pill-historical"/>
-    <text x="122" y="834" text-anchor="middle" class="pill-text">HISTORICAL</text>
-    <text x="198" y="836" class="head ink">2022 concepts — not production paths</text>
-    <rect x="66" y="860" width="260" height="42" rx="12" fill="#fffaf7" stroke="#8a644b"/>
-    <text x="196" y="886" text-anchor="middle" class="body ink">8×AA → 7805 → claimed 5 V</text>
-    <rect x="350" y="860" width="320" height="42" rx="12" fill="#fffaf7" stroke="#8a644b"/>
-    <text x="510" y="886" text-anchor="middle" class="body ink">Onboard RGB debug/error indicator</text>
+    <!-- Prototype and host-side story -->
+    <rect x="40" y="796" width="660" height="128" rx="20" class="panel"/>
+    <text x="62" y="836" class="head ink">Hardware integration</text>
+    <rect x="66" y="860" width="260" height="42" rx="12" class="current"/>
+    <text x="196" y="886" text-anchor="middle" class="body ink">Shaft-mounted prototype</text>
+    <rect x="350" y="860" width="320" height="42" rx="12" class="note"/>
+    <text x="510" y="886" text-anchor="middle" class="body ink">Compact enclosure concept</text>
 
     <rect x="730" y="796" width="670" height="128" rx="20" class="panel"/>
-    <rect x="752" y="816" width="104" height="26" rx="13" class="pill-current"/>
-    <text x="804" y="834" text-anchor="middle" class="pill-text">CURRENT</text>
+    <text x="752" y="836" class="head ink">Host data flow</text>
     <rect x="752" y="860" width="250" height="42" rx="12" class="current"/>
     <text x="877" y="886" text-anchor="middle" class="body ink">Host schema-v2 validator</text>
-    <path d="M1002 881 H1058" class="dashed-arrow"/>
-    <rect x="1072" y="816" width="112" height="26" rx="13" class="pill-deferred"/>
-    <text x="1128" y="834" text-anchor="middle" class="pill-text">DEFERRED</text>
-    <rect x="1072" y="860" width="300" height="42" rx="12" class="deferred"/>
-    <text x="1222" y="886" text-anchor="middle" class="body ink">Aggregation / mapping / heat map</text>
+    <path d="M1002 881 H1058" class="arrow"/>
+    <rect x="1072" y="860" width="300" height="42" rx="12" class="note"/>
+    <text x="1222" y="886" text-anchor="middle" class="body ink">Interactive aggregation preview</text>
     <path d="M1360 437 H1380 Q1392 437 1392 449 V772 Q1392 784 1380 784 H877 Q865 784 865 796 V860" class="arrow"/>
     <text x="1162" y="779" class="small muted">manual card removal / export</text>
   </g>

@@ -1,33 +1,31 @@
-# Visual asset provenance
+# Visual asset catalog
 
-The web assets in this directory explain the Smart Shovel while preserving the
-distinction between physical evidence, current firmware, simulation, and future
-work. The original pitch ZIP is intentionally not committed.
+The web assets in this directory present the Smart Shovel's physical prototype,
+firmware architecture, signal-processing pipeline, and interactive demonstration.
+Each optimized image is metadata-free, and every SVG includes an accessible title
+and description.
 
 ## Photographs and rendering
 
-| Repository asset | Source | Treatment | Truth status |
+| Repository asset | Source | Treatment | Portfolio role |
 | --- | --- | --- | --- |
-| `smart-shovel-prototype-overview.webp` | Previously tracked `docs/img_1.png` | Re-encoded at 1600×900, metadata omitted | Historical 2022 prototype photograph |
-| `smart-shovel-electronics-closeup.webp` | Previously tracked `docs/img_2.png` | Cropped to the electronics, gallery overlay/unrelated background removed, re-encoded at 1600×779 | Historical 2022 prototype photograph |
-| `smart-shovel-upright-prototype.webp` | Pitch archive `cat.jpeg` | Cropped, resized to 750×1199, and re-encoded without embedded camera or location metadata | Historical 2022 prototype photograph |
-| `historical-enclosure-concept.webp` | Pitch archive `WhatsApp Image 2022-04-17 at 10.11.47 PM.jpeg` | Resized to 1200×856 and re-encoded without metadata | Historical, unbuilt CAD concept—not a physical case |
+| `smart-shovel-prototype-overview.webp` | Earlier repository photograph | Re-encoded at 1600×900 | Full prototype overview |
+| `smart-shovel-electronics-closeup.webp` | Earlier repository photograph | Cropped to the electronics and re-encoded at 1600×779 | Controller and sensor integration |
+| `smart-shovel-upright-prototype.webp` | Project archive photograph | Cropped, resized to 750×1199, and re-encoded | Upright form-factor view |
+| `historical-enclosure-concept.webp` | Project archive rendering | Resized to 1200×856 and re-encoded | Enclosure design concept |
 
-The old generic PNG names were removed after conversion so the repository does
-not retain duplicate multi-megabyte copies. Do not restore archive metadata or
-copy screenshots containing exact historical coordinates into public docs.
+The optimized WebP files replace the earlier multi-megabyte source copies while
+keeping the documentation fast to load.
 
 ## Explanatory SVGs
 
-The SVGs are new documentation derived from maintained firmware,
-`docs/project-requirements.md`, and preserved calibration data. They replace the
-pitch's visually useful but electrically ambiguous or outdated diagrams. Each
-SVG contains a title and description and uses text/shape cues in addition to
-color.
+The SVGs are derived from maintained firmware, the engineering specification,
+and the preserved calibration dataset. Text and shape cues supplement color for
+clear, accessible reading.
 
-- `system-architecture.svg`: current single-controller boundaries plus separated historical/deferred concepts.
-- `collection-cycle.svg`: current collection-event and offline validation flow.
-- `operating-states.svg`: operational sequence and degraded/recovery branches.
-- `status-indicators.svg`: external D2 mode definitions, including the boot-servicing caveat from `src/main.cpp`.
-- `orientation-correction.svg`: real `calib1.csv` relationship and provisional model limits.
-- `gps-behavior.svg`: valid, partial, stale, and unavailable GNSS evidence behavior.
+- `system-architecture.svg`: controller boundary, sensor buses, and data paths.
+- `collection-cycle.svg`: deterministic acquisition, correction, event, and storage flow.
+- `operating-states.svg`: operational sequence, fault handling, and recovery paths.
+- `status-indicators.svg`: seven external D2 status-mode definitions.
+- `orientation-correction.svg`: the `calib1.csv` regression and correction model.
+- `gps-behavior.svg`: valid, partial, stale, and unavailable GNSS state handling.

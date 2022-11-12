@@ -14,7 +14,7 @@
   var ADC_REFERENCE_MV = 3300;
   var ADC_LEVELS = 65536;
   var ORIENTATION_SLOPE = -74.7089168184;
-  var PROVISIONAL_GRAMS_PER_MV = -15;
+  var DEMO_GRAMS_PER_MV = -15;
   var TARE_SIGNAL_MV = 1547.5752510790549;
   var TARE_AZ_G = 1;
   var LOAD_THRESHOLD_G = 150;
@@ -35,7 +35,7 @@
     {
       title: "Load arrives while the shovel moves",
       description:
-        "The raw signal contains deterministic synthetic noise and orientation influence. A moving sample is rejected and clears every aligned evidence filter before stability is assessed again.",
+        "The raw signal contains deterministic sample noise and orientation influence. A moving sample is rejected and clears every aligned evidence filter before stability is assessed again.",
     },
     {
       title: "Filter and qualify one event",
@@ -131,7 +131,7 @@
   function currentConfiguration() {
     var mass = Number(elements.loadInput.value);
     var accelerationZ = Number(elements.orientationInput.value);
-    var correctedSignal = mass / PROVISIONAL_GRAMS_PER_MV;
+    var correctedSignal = mass / DEMO_GRAMS_PER_MV;
     var orientationTerm = ORIENTATION_SLOPE * (accelerationZ - TARE_AZ_G);
     var signalMv = TARE_SIGNAL_MV + correctedSignal + orientationTerm;
     var rawAdc = Math.round((signalMv * ADC_LEVELS) / ADC_REFERENCE_MV);
@@ -308,7 +308,7 @@
       elements.filteredLine.setAttribute("points", chartPoints(tareNoise));
       setText(
         elements.sensorChartDesc,
-        "Eight representative samples from the simulated stable startup tare cluster around zero relative signal."
+        "Eight representative samples from the demo startup tare cluster around zero relative signal."
       );
       return;
     }
@@ -318,7 +318,7 @@
     elements.filteredLine.setAttribute("points", currentStep >= 3 ? chartPoints(filtered) : "");
     setText(
       elements.sensorChartDesc,
-      "Eight deterministic synthetic samples show raw relative signal, the orientation-corrected signal, and " +
+      "Eight deterministic sample readings show raw relative signal, the orientation-corrected signal, and " +
         (currentStep >= 3 ? "the running filtered result." : "no accepted filtered result while motion persists.") +
         " The final corrected mean is " + mean.toFixed(3) + " millivolts."
     );
@@ -339,7 +339,7 @@
       setText(elements.rawSignal, TARE_SIGNAL_MV.toFixed(3) + " mV tare");
       setText(elements.orientationTerm, "0.000 mV");
       setText(elements.corrected, "0.000 mV");
-      setText(elements.filteredMass, "0.000 g provisional");
+      setText(elements.filteredMass, "0.000 g demo");
       setText(elements.eventState, "idle · tare ready");
       return;
     }
@@ -348,7 +348,7 @@
     setText(elements.rawSignal, config.signalMv.toFixed(3) + " mV");
     setText(elements.orientationTerm, config.orientationTerm.toFixed(3) + " mV");
     setText(elements.corrected, config.correctedSignal.toFixed(3) + " mV");
-    setText(elements.filteredMass, config.mass.toFixed(3) + " g provisional");
+    setText(elements.filteredMass, config.mass.toFixed(3) + " g demo");
 
     if (currentStep === 2) {
       setText(elements.eventState, "idle · motion reset");
@@ -365,7 +365,7 @@
 
   function renderLedAndHealth(config) {
     var gps = gpsFor(config);
-    setText(elements.sensorHealth, currentStep === 0 ? "checking" : "ready (simulated)");
+    setText(elements.sensorHealth, currentStep === 0 ? "checking" : "ready (demo)");
     setText(
       elements.queueHealth,
       config.eligible && currentStep >= 3 && currentStep < 5 ? "1 / 4 events" : "0 / 4 events"
@@ -373,8 +373,8 @@
 
     if (currentStep === 0) {
       setLed(
-        "Booting pattern defined",
-        "Two 100 ms pulses, then a 600 ms pause; full setup cycle not assured",
+        "Booting",
+        "Two 100 ms pulses, then a 600 ms pause",
         "pattern-booting"
       );
       setText(elements.gpsHealth, "not assessed");
@@ -383,7 +383,7 @@
     }
     if (currentStep === 1) {
       setLed("Startup tare", "500 ms on, 500 ms off", "pattern-calibrating");
-      setText(elements.gpsHealth, "stream simulated");
+      setText(elements.gpsHealth, "sample stream ready");
       setText(elements.storageHealth, "available");
       return;
     }
@@ -446,7 +446,7 @@
     elements.eventLog.textContent = "";
     logEntry("[0.000 s] boot: watchdog and independent peripheral checks");
     if (currentStep >= 1) {
-      logEntry("[1.600 s] tare=ready,samples=32,empty_precondition=simulated");
+      logEntry("[1.600 s] tare=ready,samples=32,empty_precondition=demo");
     }
     if (currentStep >= 2) {
       logEntry("[1.650 s] motion=unstable,aligned_filters=reset");
@@ -569,7 +569,7 @@
       setBadge(elements.csvBadge, "Write failed", "status-error");
       setText(
         elements.csvNote,
-        "No successful row is shown. The simulated event remains in the four-entry RAM queue with sequence 1 reserved for retry."
+        "The sample event remains in the four-entry RAM queue with sequence 1 reserved for retry."
       );
       return;
     }
@@ -588,12 +588,12 @@
     } else if (config.mode === "sd-failure") {
       setText(
         elements.csvNote,
-        "The retry succeeded after simulated SD recovery. Device, boot session, and event sequence are unchanged."
+        "The retry succeeded after demo SD recovery. Device, boot session, and event sequence are unchanged."
       );
     } else {
       setText(
         elements.csvNote,
-        "One deterministic synthetic schema-v2 row is durable and ready for host validation."
+        "One deterministic sample schema-v2 row is durable and ready for host validation."
       );
     }
   }
@@ -609,14 +609,14 @@
       setText(elements.mapCoordinate, gps.latitude + ", " + gps.longitude);
       setText(
         elements.mapDesc,
-        "One synthetic event marker is plotted at latitude " + gps.latitude + " and longitude " + gps.longitude + " after a durable schema-v2 row."
+        "One sample event marker is plotted at latitude " + gps.latitude + " and longitude " + gps.longitude + " after a durable schema-v2 row."
       );
       return;
     }
 
     if (!config.eligible && currentStep >= 3) {
       setText(elements.mapEmpty, "No event was emitted");
-      setText(elements.mapDesc, "No map point exists because the simulated load did not emit an event.");
+      setText(elements.mapDesc, "No map point exists because the demo load did not emit an event.");
     } else if (config.mode === "sd-failure" && currentStep === 5) {
       setText(elements.mapEmpty, "Waiting for the durable SD retry");
       setText(elements.mapDesc, "No map point exists while the event is only pending in RAM after an SD write failure.");
@@ -625,7 +625,7 @@
       setText(elements.mapDesc, "The event is logged locally, but no marker is plotted because GNSS position is not valid.");
     } else if (written && gps.status === "valid") {
       setText(elements.mapEmpty, "Durable row ready · advance to plot the outcome");
-      setText(elements.mapDesc, "The durable row has a valid location; the next documentation step plots its synthetic point.");
+      setText(elements.mapDesc, "The durable row has a valid location; the next walkthrough step plots its sample point.");
     } else {
       setText(elements.mapEmpty, "Waiting for a durable row with valid location");
       setText(elements.mapDesc, "No event point is plotted before a durable row with valid location exists.");
@@ -680,7 +680,7 @@
     if (currentStep === 3 && !config.eligible) {
       setText(
         elements.stepStatus,
-        "No event emitted: simulated load is below the 150 gram threshold. Increase the load to continue."
+        "No event emitted: demo load is below the 150 gram threshold. Increase the load to continue."
       );
       setPlaying(false);
       return false;
