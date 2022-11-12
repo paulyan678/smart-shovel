@@ -16,10 +16,6 @@ contradictions, and current requirement statuses are traced in
 
 ![Historical 2022 Smart Shovel prototype laid horizontally, showing the shovel head, wooden shaft, T-handle, and exposed breadboard electronics.](docs/assets/smart-shovel-prototype-overview.webp)
 
-*Historical 2022 prototype photograph—not evidence that the refined firmware
-has run on this assembly. The exposed hardware is not weatherproof or approved
-for field use.*
-
 > **Calibration warning:** the orientation coefficient is reproducible from
 > preserved data, but its recorded units still need hardware confirmation. The
 > legacy `-15 g/mV` mass factor has no tracked raw known-mass dataset and is
