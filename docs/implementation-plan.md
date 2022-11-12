@@ -39,18 +39,19 @@ per-session sequence; an assigned sequence is retained across SD write retries.
 | Repository structure | One production `src/` application; legacy and examples excluded | `[PASS: tree and PlatformIO paths inspected]` |
 | Core logic | Calibration/ADC plausibility, filtering, event cooldown/re-arm, component-wise GNSS evidence, schema-v2 identity, interruption parsing, and degraded states have deterministic tests | `[PASS: 26/26 native Unity tests]` |
 | Firmware adapter | ADC/IMU recovery, stable-only aligned windows, GNSS merge/wait, retry-stable synchronous SD writes, nonblocking USB diagnostics, watchdog, external LED, and configuration integrate and compile | `[PASS: Nano RP2040 Connect compile; physical behavior blocked below]` |
-| Calibration/export tooling | Raw inputs remain byte-stable, the fit is reproducible, firmware image size is independently checked, and schema-v2 exports are validated before aggregation | `[PASS: calibration smoke test and 10/10 Python tests]` |
-| Documentation | Setup, wiring, calibration, schema v2, behavior, limitations, and historical claims are traceable and links resolve | `[PASS: final content audit and 47-link local target check]` |
+| Calibration/export tooling | Raw inputs remain byte-stable, the fit is reproducible, firmware image size is independently checked, and schema-v2 exports are validated before aggregation | `[PASS: calibration smoke test and 17/17 Python tests, including documentation-gate tests]` |
+| Documentation | Setup, wiring, calibration, schema v2, behavior, limitations, and historical claims are traceable and links resolve | `[PASS: make docs-check; browser smoke 6/6; desktop and 390×844 visual inspection]` |
 | Security | No tracked credentials; local secret files are ignored; exposed credentials are documented for rotation | `[PASS: staged-tree and targeted credential scans]` |
-| Publication | Intentional diff reviewed, dated commit verified, and normal push to `origin/main` succeeds | `[PENDING: publication has not occurred]` |
+| Publication | Intentional diff reviewed, commit verified, and normal push to `origin/main` succeeds | `[RELEASE-TIME GATE: result and commit SHA belong in the final handoff]` |
 
 ## Executable acceptance gates
 
 | Gate | Exact command | Status |
 | --- | --- | --- |
 | Install pinned tools | `make setup` | `[PASS]` |
-| Python tooling tests | `make test-python` | `[PASS: 10/10 tests]` |
+| Python tooling tests | `make test-python` | `[PASS: 17/17 tests]` |
 | Calibration smoke test | `make calibration-check` | `[PASS: documented calib1 fit/hash reproduced]` |
+| Documentation/link/asset check | `make docs-check` | `[PASS: 16 sources; 87 references; 72 local targets; 10 assets / 529,660 bytes; 6 SVG/XML files]` |
 | Credential/current-tree scan | `make secret-check` | `[PASS: staged tree]` |
 | C++ formatting | `make format-check` | `[PASS]` |
 | Practical static analysis | `make static-check` | `[PASS: cppcheck covered 15 maintained source files]` |

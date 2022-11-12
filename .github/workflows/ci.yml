@@ -42,6 +42,9 @@ jobs:
       - name: Recompute calibration evidence
         run: make calibration-check
 
+      - name: Validate documentation and visual assets
+        run: make docs-check
+
       - name: Scan current tree for credentials
         run: make secret-check
 

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <title>Smart Shovel demo smoke test</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, sans-serif;
+      }
+
+      body {
+        margin: 2rem auto;
+        max-width: 52rem;
+        padding: 0 1rem;
+        color: #153332;
+        background: #f4f7f4;
+      }
+
+      #status {
+        padding: 0.75rem 1rem;
+        border: 2px solid #7c2d12;
+        border-radius: 0.5rem;
+        background: #fff7ed;
+        font-weight: 700;
+      }
+
+      body[data-smoke-status="passed"] #status {
+        border-color: #166534;
+        background: #f0fdf4;
+      }
+
+      iframe {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        clip-path: inset(50%);
+      }
+    </style>
+  </head>
+  <body data-smoke-status="running">
+    <main>
+      <h1>Smart Shovel demo smoke test</h1>
+      <p>
+        This same-origin browser check exercises the normal collection path and one degraded-GNSS
+        path without adding a test framework or network dependency.
+      </p>
+      <p id="status" role="status" aria-live="polite">Running…</p>
+      <ol id="results"></ol>
+      <iframe id="fixture" src="index.html" title="Smart Shovel demo test fixture"></iframe>
+    </main>
+    <script>
+      (function () {
+        "use strict";
+
+        var fixture = document.getElementById("fixture");
+        var status = document.getElementById("status");
+        var results = document.getElementById("results");
+
+        function record(label, passed) {
+          var item = document.createElement("li");
+          item.textContent = (passed ? "PASS: " : "FAIL: ") + label;
+          results.appendChild(item);
+          if (!passed) {
+            throw new Error(label);
+          }
+        }
+
+        function advance(documentUnderTest, count) {
+          var next = documentUnderTest.getElementById("next-step");
+          for (var index = 0; index < count; index += 1) {
+            next.click();
+          }
+        }
+
+        fixture.addEventListener("load", function () {
+          try {
+            var demo = fixture.contentDocument;
+            var csv = demo.getElementById("csv-output");
+            var marker = demo.getElementById("map-marker");
+            var mode = demo.getElementById("failure-mode");
+
+            advance(demo, 6);
+            record("normal path writes one schema-v2 row", csv.textContent.split("\n").length === 2);
+            record("normal path reports valid GNSS and healthy status", csv.textContent.indexOf(",valid,false,healthy") !== -1);
+            record(
+              "normal durable row exposes its synthetic map marker",
+              marker.hasAttribute("hidden") === false
+            );
+
+            demo.getElementById("reset-demo").click();
+            mode.value = "gps-unavailable";
+            mode.dispatchEvent(new Event("change", { bubbles: true }));
+            advance(demo, 6);
+            record("degraded path still writes one local row", csv.textContent.split("\n").length === 2);
+            record("degraded row preserves no-fix and timeout evidence", csv.textContent.indexOf(",no_fix,true,gps_degraded") !== -1);
+            record(
+              "invalid GNSS never exposes a map marker",
+              marker.hasAttribute("hidden") === true
+            );
+
+            document.body.dataset.smokeStatus = "passed";
+            status.textContent = "PASS: 6 browser assertions";
+          } catch (error) {
+            document.body.dataset.smokeStatus = "failed";
+            status.textContent = "FAIL: " + error.message;
+            window.setTimeout(function () {
+              throw error;
+            }, 0);
+          }
+        });
+      }());
+    </script>
+  </body>
+</html>

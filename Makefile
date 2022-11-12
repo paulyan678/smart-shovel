@@ -9,7 +9,7 @@ SECRET_ASSIGNMENT_PATTERN := (ssid|pass(word)?|wifi_(ssid|password)|api_?key|sec
 
 .DEFAULT_GOAL := help
 
-.PHONY: help setup test-python calibration-check validate-events test-native build-firmware
+.PHONY: help setup test-python calibration-check validate-events docs-check test-native build-firmware
 .PHONY: format format-check static-check secret-check verify clean
 
 help:
@@ -18,6 +18,7 @@ help:
 		'make test-python        Run calibration-tool unit tests' \
 		'make calibration-check  Recompute the preserved calibration fit' \
 		'make validate-events EVENTS=path/to/events.csv  Validate an SD export' \
+		'make docs-check          Validate documentation links, XML, privacy, and assets' \
 		'make test-native        Build and run host-side Unity tests' \
 		'make build-firmware     Compile for the Arduino Nano RP2040 Connect' \
 		'make format-check       Check maintained C/C++ formatting' \
@@ -39,6 +40,9 @@ calibration-check:
 validate-events:
 	@test -n "$(EVENTS)" || { echo 'Set EVENTS=path/to/events.csv'; exit 2; }
 	$(PYTHON) tools/validate_events.py "$(EVENTS)"
+
+docs-check:
+	$(PYTHON) tools/check_docs.py .
 
 test-native:
 	$(PIO) test -e native
@@ -85,7 +89,7 @@ secret-check:
 	fi
 	@echo 'Secret-pattern scan passed.'
 
-verify: test-python calibration-check secret-check format-check static-check test-native build-firmware
+verify: test-python calibration-check docs-check secret-check format-check static-check test-native build-firmware
 
 clean:
 	$(PIO) run --target clean

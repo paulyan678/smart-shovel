@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 920" role="img" aria-labelledby="gps-title gps-desc">
+  <title id="gps-title">Smart Shovel per-event GNSS behavior</title>
+  <desc id="gps-desc">For each detected collection event, the firmware starts with the current GNSS snapshot and independently retains the strongest location, UTC date and time, altitude, and satellite evidence seen during a five-second window. A complete fresh location and UTC fix makes the event ready for FIFO storage without further GNSS waiting. At the deadline, retained evidence becomes ready with its underlying status and a separate gps_wait_timed_out boolean. The actual append may wait behind an older event or unavailable storage. Cases for valid, location-only, stale, and no-fix records are shown.</desc>
+  <defs>
+    <marker id="gps-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#31515f"/></marker>
+    <marker id="gps-arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#6d5ba5"/></marker>
+    <style>
+      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.section{font-size:23px;font-weight:760}.head{font-size:19px;font-weight:750}.body{font-size:14px}.small{font-size:12px}.label{font-size:11px;font-weight:760;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.warning{fill:#fff4d8;stroke:#a86716;stroke-width:2}.fault{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.neutral{fill:#f1f5f4;stroke:#82979e;stroke-width:1.8}.component{fill:#fbfdfc;stroke:#24755d;stroke-width:1.8}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#gps-arrow)}.future{fill:none;stroke:#6d5ba5;stroke-width:2.3;stroke-dasharray:8 7;marker-end:url(#gps-arrow-purple)}.pill-current{fill:#176f56}.pill-validation{fill:#a63f3b}.pill-provisional{fill:#9a5b0d}.pill-text{fill:#fff;font-size:11px;font-weight:750;letter-spacing:.7px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;fill:#17313c}.yes{fill:#176f56}.no{fill:#a63f3b}.timeline{stroke:#31515f;stroke-width:3}.tick{stroke:#31515f;stroke-width:2}.freeze{fill:#eef3f2;stroke:#cbd8d5;stroke-width:1.4}
+    </style>
+  </defs>
+  <rect width="1440" height="920" class="bg"/>
+  <g class="text">
+    <text x="48" y="58" class="title ink">Per-event GNSS behavior: retain evidence, preserve status</text>
+    <text x="48" y="88" class="subtitle muted">A five-second wait is bounded; timeout is a separate boolean, not a replacement for the observed fix state.</text>
+    <rect x="1190" y="38" width="202" height="34" rx="17" class="pill-current"/><text x="1291" y="61" text-anchor="middle" class="pill-text">CURRENT FIRMWARE</text>
+
+    <!-- Evidence flow -->
+    <rect x="40" y="120" width="1360" height="364" rx="22" class="panel"/>
+    <text x="66" y="158" class="section ink">1 · Build the strongest event snapshot</text>
+    <text x="66" y="184" class="body muted">TinyGPSPlus snapshots may update components at different times. A later incomplete sentence cannot erase better retained evidence.</text>
+
+    <rect x="66" y="218" width="220" height="112" rx="18" class="current"/>
+    <text x="88" y="247" class="label" fill="#176f56">EVENT DETECTED</text>
+    <text x="88" y="274" class="head ink">Start with current</text>
+    <text x="88" y="296" class="head ink">snapshot</text>
+    <text x="88" y="319" class="small muted">measurement is already frozen</text>
+
+    <path d="M286 274 H346" class="arrow"/>
+    <rect x="346" y="210" width="500" height="180" rx="20" class="current"/>
+    <text x="370" y="240" class="label" fill="#176f56">COMPONENT-WISE BEST-EVIDENCE MERGE</text>
+    <rect x="370" y="260" width="212" height="48" rx="12" class="component"/>
+    <text x="476" y="282" text-anchor="middle" class="head ink">Location</text>
+    <text x="476" y="301" text-anchor="middle" class="small muted">valid &gt; stale &gt; invalid &gt; no fix</text>
+    <rect x="606" y="260" width="216" height="48" rx="12" class="component"/>
+    <text x="714" y="282" text-anchor="middle" class="head ink">UTC date + time</text>
+    <text x="714" y="301" text-anchor="middle" class="small muted">valid &gt; stale &gt; invalid &gt; missing</text>
+    <rect x="370" y="324" width="212" height="48" rx="12" class="component"/>
+    <text x="476" y="354" text-anchor="middle" class="head ink">Altitude</text>
+    <rect x="606" y="324" width="216" height="48" rx="12" class="component"/>
+    <text x="714" y="354" text-anchor="middle" class="head ink">Satellites</text>
+
+    <path d="M846 300 H906" class="arrow"/>
+    <polygon points="1006,210 1106,300 1006,390 906,300" class="neutral"/>
+    <text x="1006" y="287" text-anchor="middle" class="head ink">Fresh location</text>
+    <text x="1006" y="310" text-anchor="middle" class="head ink">+ fresh UTC?</text>
+    <text x="1006" y="335" text-anchor="middle" class="small muted">both ≤5 s old</text>
+
+    <path d="M1106 276 H1160" class="arrow"/>
+    <text x="1124" y="262" class="label yes">YES</text>
+    <rect x="1160" y="218" width="212" height="96" rx="18" class="current"/>
+    <text x="1266" y="248" text-anchor="middle" class="head ink">Ready for FIFO</text>
+    <text x="1266" y="275" text-anchor="middle" class="code">gps_status=valid</text>
+    <text x="1266" y="298" text-anchor="middle" class="code">gps_wait_timed_out=false</text>
+
+    <path d="M1006 390 V420 H1160" class="arrow"/>
+    <text x="1020" y="414" class="label no">NO · WAIT TO 5 s</text>
+    <rect x="1160" y="348" width="212" height="112" rx="18" class="warning"/>
+    <text x="1266" y="378" text-anchor="middle" class="head ink">At 5 s deadline</text>
+    <text x="1266" y="405" text-anchor="middle" class="body ink">Retained evidence ready</text>
+    <text x="1266" y="430" text-anchor="middle" class="code">gps_status=&lt;observed&gt;</text>
+    <text x="1266" y="451" text-anchor="middle" class="code">gps_wait_timed_out=true</text>
+
+    <line x1="370" y1="430" x2="846" y2="430" class="timeline"/>
+    <line x1="370" y1="420" x2="370" y2="440" class="tick"/>
+    <line x1="846" y1="420" x2="846" y2="440" class="tick"/>
+    <text x="370" y="455" text-anchor="middle" class="small muted">0 s · event</text>
+    <text x="608" y="455" text-anchor="middle" class="small muted">poll and merge every loop</text>
+    <text x="846" y="455" text-anchor="middle" class="small muted">5 s · deadline</text>
+
+    <!-- Cases -->
+    <text x="48" y="528" class="section ink">2 · What one schema-v2 row contains</text>
+    <text x="48" y="553" class="body muted">Optional invalid fields are blank. Independently valid pieces may still be present in a degraded row.</text>
+
+    <rect x="40" y="580" width="326" height="220" rx="20" class="current"/>
+    <text x="64" y="612" class="label" fill="#176f56">VALID</text>
+    <text x="64" y="642" class="head ink">Fresh location + fresh UTC</text>
+    <text x="64" y="674" class="code">gps_status=valid</text>
+    <text x="64" y="698" class="code">latitude/longitude=present</text>
+    <text x="64" y="722" class="code">timestamp_utc=present</text>
+    <text x="64" y="746" class="code">gps_wait_timed_out=false</text>
+    <text x="64" y="780" class="small muted">GNSS waiting completes immediately</text>
+    <text x="64" y="796" class="small muted">when this full fresh fix is seen.</text>
+
+    <rect x="384" y="580" width="326" height="220" rx="20" class="warning"/>
+    <text x="408" y="612" class="label" fill="#86500d">LOCATION_ONLY</text>
+    <text x="408" y="642" class="head ink">Fresh location; UTC missing</text>
+    <text x="408" y="674" class="code">gps_status=location_only</text>
+    <text x="408" y="698" class="code">latitude/longitude=present</text>
+    <text x="408" y="722" class="code">timestamp_utc=blank</text>
+    <text x="408" y="746" class="code">gps_wait_timed_out=true</text>
+    <text x="408" y="780" class="small muted">Fresh altitude may appear only because</text>
+    <text x="408" y="796" class="small muted">the retained location itself is valid.</text>
+
+    <rect x="728" y="580" width="326" height="220" rx="20" class="warning"/>
+    <text x="752" y="612" class="label" fill="#86500d">STALE</text>
+    <text x="752" y="638" class="head ink">Required location or UTC</text>
+    <text x="752" y="660" class="head ink">is too old</text>
+    <text x="752" y="688" class="code">gps_status=stale</text>
+    <text x="752" y="712" class="code">stale component=blank</text>
+    <text x="752" y="736" class="code">valid other component=may appear</text>
+    <text x="752" y="760" class="code">gps_wait_timed_out=true</text>
+    <text x="752" y="788" class="small muted">gps_age_ms may retain stale location age.</text>
+
+    <rect x="1072" y="580" width="328" height="220" rx="20" class="fault"/>
+    <text x="1096" y="612" class="label" fill="#a63f3b">NO_FIX</text>
+    <text x="1096" y="642" class="head ink">No location retained</text>
+    <text x="1096" y="674" class="code">gps_status=no_fix</text>
+    <text x="1096" y="698" class="code">latitude/longitude=blank</text>
+    <text x="1096" y="722" class="code">altitude_m=blank</text>
+    <text x="1096" y="746" class="code">gps_wait_timed_out=true</text>
+    <text x="1096" y="780" class="small muted">Independently valid UTC or satellite count</text>
+    <text x="1096" y="796" class="small muted">may still be emitted.</text>
+
+    <!-- Semantics footer -->
+    <rect x="40" y="828" width="1360" height="64" rx="18" class="freeze"/>
+    <rect x="62" y="847" width="104" height="26" rx="13" class="pill-current"/><text x="114" y="865" text-anchor="middle" class="pill-text">CURRENT</text>
+    <text x="186" y="865" class="body ink">Evidence freezes when selected; FIFO order or unavailable SD may still delay the synchronous append.</text>
+    <rect x="945" y="847" width="184" height="26" rx="13" class="pill-validation"/><text x="1037" y="865" text-anchor="middle" class="pill-text">HARDWARE VALIDATION</text>
+    <text x="1146" y="865" class="small ink">Installed UART/module behavior unverified</text>
+    <text x="186" y="886" class="small muted">UART silence &gt;10 s affects LED/diagnostics, not gps_status by itself. The schema accepts timeout, but current production does not emit it.</text>
+  </g>
+</svg>

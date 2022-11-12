@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="correction-title correction-desc">
+  <title id="correction-title">Orientation correction evidence and firmware calculation</title>
+  <desc id="correction-desc">A plot summarizes the 618 preserved calib1 rows in twenty equal-count acceleration bins, with bin means and within-bin signal standard deviations, alongside the ordinary least-squares line with slope negative 74.7089168 and R squared 0.9151767. The firmware applies a tare-relative orientation correction. Units, portability, and the negative 15 grams per millivolt conversion remain provisional; this is not a calibrated mass result and runtime auto-zero is disabled.</desc>
+  <defs>
+    <marker id="corr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#31515f"/></marker>
+    <style>
+      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.section{font-size:24px;font-weight:760}.head{font-size:19px;font-weight:750}.body{font-size:15px}.small{font-size:12px}.label{font-size:11px;font-weight:760;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.provisional{fill:#fff4d8;stroke:#a86716;stroke-width:2}.validation{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.plot{fill:#fbfdfc;stroke:#b8c8c5;stroke-width:1.5}.grid{stroke:#dde6e4;stroke-width:1}.axis{stroke:#49636e;stroke-width:1.8}.fit{stroke:#a63f3b;stroke-width:3.5;fill:none}.error{stroke:#6e8290;stroke-width:1.5;opacity:.72}.point{fill:#176f56;stroke:#fff;stroke-width:1.5}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:18px;fill:#17313c}.formula-small{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:15px;fill:#17313c}.pill-provisional{fill:#9a5b0d}.pill-validation{fill:#a63f3b}.pill-current{fill:#176f56}.pill-text{fill:#fff;font-size:11px;font-weight:750;letter-spacing:.7px}.arrow{fill:none;stroke:#31515f;stroke-width:2.5;marker-end:url(#corr-arrow)}.chip{fill:#eef3f2;stroke:#cbd8d5;stroke-width:1.2}.strike{stroke:#a63f3b;stroke-width:2.5}
+    </style>
+  </defs>
+  <rect width="1440" height="900" class="bg"/>
+  <g class="text">
+    <text x="48" y="58" class="title ink">Orientation correction: supported relationship, provisional units</text>
+    <text x="48" y="88" class="subtitle muted">The preserved data supports a z-acceleration relationship. It does not support calibrated grams.</text>
+
+    <!-- Evidence plot -->
+    <rect x="40" y="120" width="720" height="684" rx="22" class="panel"/>
+    <text x="68" y="158" class="section ink">Preserved calib1 evidence</text>
+    <rect x="552" y="136" width="126" height="26" rx="13" class="pill-provisional"/><text x="615" y="154" text-anchor="middle" class="pill-text">PROVISIONAL</text>
+    <text x="68" y="184" class="small muted">20 equal-count summaries of 618 rows · circles are bin means · bars are within-bin signal SD</text>
+
+    <rect x="100" y="230" width="600" height="420" class="plot"/>
+    <!-- grid and axes: x = -0.5…2.5; y = -170…60 -->
+    <line x1="100" y1="650" x2="700" y2="650" class="axis"/>
+    <line x1="100" y1="230" x2="100" y2="650" class="axis"/>
+    <line x1="100" y1="285" x2="700" y2="285" class="grid"/>
+    <line x1="100" y1="376" x2="700" y2="376" class="grid"/>
+    <line x1="100" y1="468" x2="700" y2="468" class="grid"/>
+    <line x1="100" y1="559" x2="700" y2="559" class="grid"/>
+    <line x1="200" y1="230" x2="200" y2="650" class="grid"/>
+    <line x1="300" y1="230" x2="300" y2="650" class="grid"/>
+    <line x1="400" y1="230" x2="400" y2="650" class="grid"/>
+    <line x1="500" y1="230" x2="500" y2="650" class="grid"/>
+    <line x1="600" y1="230" x2="600" y2="650" class="grid"/>
+    <text x="88" y="235" text-anchor="end" class="small muted">60</text>
+    <text x="88" y="290" text-anchor="end" class="small muted">30</text>
+    <text x="88" y="381" text-anchor="end" class="small muted">−20</text>
+    <text x="88" y="473" text-anchor="end" class="small muted">−70</text>
+    <text x="88" y="564" text-anchor="end" class="small muted">−120</text>
+    <text x="88" y="654" text-anchor="end" class="small muted">−170</text>
+    <text x="100" y="672" text-anchor="middle" class="small muted">−0.5</text>
+    <text x="200" y="672" text-anchor="middle" class="small muted">0.0</text>
+    <text x="300" y="672" text-anchor="middle" class="small muted">0.5</text>
+    <text x="400" y="672" text-anchor="middle" class="small muted">1.0</text>
+    <text x="500" y="672" text-anchor="middle" class="small muted">1.5</text>
+    <text x="600" y="672" text-anchor="middle" class="small muted">2.0</text>
+    <text x="700" y="672" text-anchor="middle" class="small muted">2.5</text>
+    <text x="400" y="704" text-anchor="middle" class="body ink">az · recorded unit (firmware assumes g)</text>
+    <text x="38" y="440" transform="rotate(-90 38 440)" text-anchor="middle" class="body ink">voltage · recorded signal unit</text>
+
+    <path d="M110 232 L700 634.4" class="fit"/>
+    <line x1="168.1" y1="307.5" x2="168.1" y2="261.1" class="error"/><circle cx="168.1" cy="284.3" r="5" class="point"/>
+    <line x1="233.0" y1="329.9" x2="233.0" y2="299.1" class="error"/><circle cx="233.0" cy="314.5" r="5" class="point"/>
+    <line x1="263.1" y1="372.7" x2="263.1" y2="311.1" class="error"/><circle cx="263.1" cy="341.9" r="5" class="point"/>
+    <line x1="281.3" y1="373.2" x2="281.3" y2="334.3" class="error"/><circle cx="281.3" cy="353.7" r="5" class="point"/>
+    <line x1="298.9" y1="380.8" x2="298.9" y2="340.6" class="error"/><circle cx="298.9" cy="360.7" r="5" class="point"/>
+    <line x1="314.8" y1="391.1" x2="314.8" y2="352.5" class="error"/><circle cx="314.8" cy="371.8" r="5" class="point"/>
+    <line x1="334.1" y1="399.4" x2="334.1" y2="363.7" class="error"/><circle cx="334.1" cy="381.5" r="5" class="point"/>
+    <line x1="351.5" y1="401.9" x2="351.5" y2="366.8" class="error"/><circle cx="351.5" cy="384.4" r="5" class="point"/>
+    <line x1="368.5" y1="425.0" x2="368.5" y2="382.6" class="error"/><circle cx="368.5" cy="403.8" r="5" class="point"/>
+    <line x1="382.0" y1="437.9" x2="382.0" y2="393.9" class="error"/><circle cx="382.0" cy="415.9" r="5" class="point"/>
+    <line x1="394.1" y1="434.1" x2="394.1" y2="400.0" class="error"/><circle cx="394.1" cy="417.0" r="5" class="point"/>
+    <line x1="407.0" y1="444.6" x2="407.0" y2="402.4" class="error"/><circle cx="407.0" cy="423.5" r="5" class="point"/>
+    <line x1="421.7" y1="459.9" x2="421.7" y2="416.9" class="error"/><circle cx="421.7" cy="438.4" r="5" class="point"/>
+    <line x1="435.3" y1="472.2" x2="435.3" y2="432.7" class="error"/><circle cx="435.3" cy="452.4" r="5" class="point"/>
+    <line x1="450.2" y1="479.7" x2="450.2" y2="438.6" class="error"/><circle cx="450.2" cy="459.1" r="5" class="point"/>
+    <line x1="465.2" y1="494.1" x2="465.2" y2="456.8" class="error"/><circle cx="465.2" cy="475.5" r="5" class="point"/>
+    <line x1="482.1" y1="511.2" x2="482.1" y2="477.7" class="error"/><circle cx="482.1" cy="494.4" r="5" class="point"/>
+    <line x1="496.0" y1="526.4" x2="496.0" y2="481.2" class="error"/><circle cx="496.0" cy="503.8" r="5" class="point"/>
+    <line x1="521.9" y1="549.1" x2="521.9" y2="501.6" class="error"/><circle cx="521.9" cy="525.4" r="5" class="point"/>
+    <line x1="583.6" y1="594.5" x2="583.6" y2="519.8" class="error"/><circle cx="583.6" cy="557.1" r="5" class="point"/>
+
+    <rect x="124" y="724" width="552" height="56" rx="14" class="chip"/>
+    <line x1="146" y1="744" x2="190" y2="744" class="fit"/>
+    <text x="204" y="749" class="body ink">OLS: voltage = −74.7089168 × az + 25.2884374</text>
+    <text x="146" y="770" class="small muted">n = 618 · R² = 0.9151767 · plot is a calculated summary, not four independent trials</text>
+
+    <!-- Firmware calculation -->
+    <rect x="790" y="120" width="610" height="684" rx="22" class="panel"/>
+    <text x="818" y="158" class="section ink">What the firmware calculates</text>
+    <rect x="1218" y="136" width="154" height="26" rx="13" class="pill-current"/><text x="1295" y="154" text-anchor="middle" class="pill-text">IMPLEMENTED MATH</text>
+
+    <rect x="818" y="192" width="554" height="110" rx="16" class="current"/>
+    <text x="842" y="220" class="label" fill="#176f56">OPERATOR-GATED STARTUP TARE</text>
+    <text x="842" y="250" class="body ink">Empty + motion-stable · 32 samples</text>
+    <text x="842" y="276" class="formula-small">tare = mean(signal), mean(az)</text>
+
+    <path d="M1095 302 V338" class="arrow"/>
+    <rect x="818" y="338" width="554" height="132" rx="16" class="provisional"/>
+    <text x="842" y="366" class="label" fill="#86500d">TARE-RELATIVE ORIENTATION CORRECTION</text>
+    <text x="842" y="401" class="formula">corrected_delta = (measured − tare)</text>
+    <text x="842" y="430" class="formula">                − s × (az − tare_az)</text>
+    <text x="842" y="456" class="small muted">s = −74.7089168184 in config; signal units and portability remain provisional</text>
+
+    <path d="M1095 470 V506" class="arrow"/>
+    <rect x="818" y="506" width="554" height="116" rx="16" class="validation"/>
+    <text x="842" y="534" class="label" fill="#a63f3b">NOT A CALIBRATED GRAM RESULT</text>
+    <text x="842" y="568" class="formula">mass_g = corrected_delta × (−15)</text>
+    <text x="842" y="596" class="small muted">Legacy factor is finite only to exercise the event pipeline; records say provisional</text>
+
+    <rect x="818" y="650" width="262" height="122" rx="16" class="provisional"/>
+    <text x="842" y="678" class="label" fill="#86500d">UNCERTAINTY CAVEAT</text>
+    <text x="842" y="706" class="body ink">OLS slope 95% CI</text>
+    <text x="842" y="730" class="formula-small">[−76.5086, −72.9093]</text>
+    <text x="842" y="755" class="small muted">Sequential residuals are correlated</text>
+
+    <rect x="1102" y="650" width="270" height="122" rx="16" class="validation"/>
+    <text x="1126" y="678" class="label" fill="#a63f3b">HAC(5) SENSITIVITY</text>
+    <text x="1126" y="706" class="body ink">Approximate slope interval</text>
+    <text x="1126" y="730" class="formula-small">[−77.7538, −71.6640]</text>
+    <text x="1126" y="755" class="small muted">No device/environment generalization</text>
+
+    <rect x="40" y="830" width="1360" height="46" rx="18" class="validation"/>
+    <rect x="62" y="840" width="184" height="26" rx="13" class="pill-validation"/><text x="154" y="858" text-anchor="middle" class="pill-text">HARDWARE VALIDATION</text>
+    <text x="266" y="859" class="body ink">Raw files omit signal provenance and known-mass truth. Runtime auto-zero is disabled because no independent unloaded signal exists.</text>
+  </g>
+</svg>

@@ -23,7 +23,10 @@ Historical claims are evidence inputs, not current acceptance results. In partic
 - Historical two-controller experiment: [`../legacy/experiments/master-slave/`](../legacy/experiments/master-slave/).
 - Raw calibration and field logs: [`../calibration/data/raw/`](../calibration/data/raw/).
 - Historical analysis notebook: [`../legacy/analysis/vis.ipynb`](../legacy/analysis/vis.ipynb).
-- Repository prototype photographs: [`img_1.png`](img_1.png) and [`img_2.png`](img_2.png).
+- Optimized repository prototype photographs and explanatory diagrams:
+  [`assets/`](assets/), with provenance recorded in
+  [`assets/README.md`](assets/README.md) and interpretation in
+  [`visual-guide.md`](visual-guide.md).
 
 Section names below refer to `main.tex` in the pitch archive. The archive is not vendored here, so its claims must remain identifiable by both filename and section.
 
@@ -32,6 +35,7 @@ Section names below refer to `main.tex` in the pitch archive. The archive is not
 Only the following status values are used in the traceability table:
 
 - `implemented`: an active code path exists; this alone says nothing about compilation or hardware behavior.
+- `partially-implemented`: an active path satisfies part of the requirement, but named fields, conditions, or behavior remain absent.
 - `host-tested`: a behavior or dataset was exercised on a development host.
 - `compile-tested`: the production candidate compiled for the named board and dependency versions. No item receives this status until a reproducible build record exists.
 - `hardware-validation-required`: physical wiring, behavior, accuracy, safety, or environmental performance remains to be demonstrated.
@@ -83,7 +87,7 @@ Production logic lives under [`../lib/smart_shovel_core/`](../lib/smart_shovel_c
 | Orientation sensing | Onboard IMU; pitch section 5.3.3 correlates voltage with z acceleration | Core applies a tare-relative, same-unit correction using the preserved `calib1.csv` slope and rejects non-finite inputs; host tests cover the formula | Axis convention on the assembled shovel, coefficient units/portability, adapter sample freshness, physical validity |
 | GNSS | L76B GNSS module in pitch BOM | Core validates and component-wise merges the best location, date/time, altitude, and satellite evidence; adapter polls `Serial1` nonblockingly; config selects 9,600 baud and 5 s freshness/event-wait limits | Exact module/firmware, antenna placement, electrical levels, actual TX/RX header wiring and on-device behavior |
 | Storage | SPI microSD module; pitch says CSV stores time, location, and weight | Schema-v2 rows use device/boot-session/sequence identity; the SD adapter checks the exact header and line boundary, retains one sequence across retries, appends/flushes/closes, and retries from 30–300 s; config selects CS/D10 and `events.csv` | SPI header pins selected by the board core, card voltage compatibility, filesystem/capacity, growing-file latency, write endurance and real power-loss behavior |
-| User status | Onboard RGB LED in pitch and historical firmware | Production deliberately uses one active-high external D2 LED with seven pulse/solid patterns plus serial diagnostics; no Wi-Fi/RGB dependency is compiled | D2 LED/resistor wiring, polarity, daylight visibility, operator comprehension, and whether a future bounded onboard-RGB adapter is justified |
+| User status | Onboard RGB LED in pitch and historical firmware | Production deliberately uses one active-high external D2 LED with seven defined modes plus serial diagnostics; six non-boot modes are serviced in the loop, while boot mode receives one setup update and may not render its full double-pulse cycle; no Wi-Fi/RGB dependency is compiled | D2 LED/resistor wiring, polarity, daylight visibility, operator comprehension, boot-pattern servicing, and whether a future bounded onboard-RGB adapter is justified |
 | Prototype power | Pitch section 3.2.2: eight 1.5 V AA cells, nominal 12 V, through a 7805 to a claimed 5 V rail | No power topology is encoded in firmware | Current source, regulator implementation, grounding, current draw/runtime, heat, fuse/reverse-polarity/overvoltage protection |
 | Structure | Wooden 7/8-inch dowel, dustpan head, M5 fasteners, washer, scrap-metal/load-cell reinforcement, freely rotating handle; exposed breadboards visible | No mechanical design source is in this repository | Dimensions/tolerances, load path, load-cell mounting, fastener grades/torque, total mass/balance, enclosure/ingress safety |
 
@@ -100,7 +104,13 @@ The source for this flow is [`../legacy/firmware/2022-prototype/main.ino`](../le
 
 ### Current production design flow
 
-The maintained core, configuration, and `src/main.cpp` implement the following nonblocking flow. Host logic and target compilation are verified; peripheral behavior remains to be verified on hardware:
+The maintained core, configuration, and `src/main.cpp` implement the following
+cooperative acquisition and bounded-recovery flow. GNSS polling, domain state
+machines, status timing, and USB diagnostics avoid intentional blocking, while
+SD operations and some pinned dependency calls remain synchronous; the watchdog
+bounds a stall by reset rather than making those calls nonblocking. Host logic
+and target compilation are verified, while peripheral behavior remains to be
+verified on hardware:
 
 1. Sample A0 and the onboard IMU at a configured 50 ms interval, averaging eight ADC reads and using explicit motion/sample validity.
 2. Establish startup tare from a stable window under an operator empty-head
@@ -138,7 +148,7 @@ The table distinguishes code evidence from physical-wiring evidence. A pin const
 | SD chip select | `kSdChipSelectPin = 10` in [`../include/smart_shovel/config.hpp`](../include/smart_shovel/config.hpp) | CS/D10 is the production intent. Physical connection and adapter behavior are unverified. |
 | SD SPI signals | Pitch `Electrical component.png` labels module header `1 GND`, `2 VCC`, `3 MISO`, `4 MOSI`, `5 SCK`, `6 CS` | Module-side labels are documented. The Nano header pins for MISO/MOSI/SCK are not explicitly recorded; the adapter will use the board’s default `SPI` mapping. Generic comments under [`../examples/hardware/sd-card/`](../examples/hardware/sd-card/) are not wiring authority. |
 | IMU | Production dependency `Arduino_LSM6DSOX@1.1.2`; [`sensor_reader.cpp`](../src/sensor_reader.cpp) checks availability/return values | Onboard, library-managed connection; no external IMU pins are required. Physical axis mapping and timing remain hardware-validation-required. |
-| Status LED | [`status_led.cpp`](../src/status_led.cpp) drives configured D2 active-high; [`config.hpp`](../include/smart_shovel/config.hpp) documents the external LED/current-limit-resistor default | Seven single-LED pulse/solid patterns compile. This reversible deviation from the pitch's onboard RGB avoids D13/SPI conflict and coprocessor-dependent RGB calls; electrical/visibility/operator validation is pending. |
+| Status LED | [`status_led.cpp`](../src/status_led.cpp) drives configured D2 active-high; [`config.hpp`](../include/smart_shovel/config.hpp) documents the external LED/current-limit-resistor default | Seven single-LED modes compile. Six are loop-serviced; boot mode is selected and updated once during setup, so its defined double-pulse waveform is not guaranteed to complete. This reversible deviation from the pitch's onboard RGB avoids D13/SPI conflict and coprocessor-dependent RGB calls; electrical/visibility/operator validation is pending. |
 | Historical two-Nano I2C | [`notes.txt`](../legacy/experiments/master-slave/notes.txt) mentions ground and A5/A5 | Rejected as an authoritative pin map; incomplete and internally wrong for SDA. |
 | Power | Pitch states 8×AA → 7805 → 5 V for all components | Historical intent only. There is no schematic, measured rail, component current budget, common-ground record, or proof that the amplified ADC signal stays within the Nano’s published limits. Do not energize from this description alone. |
 
@@ -161,7 +171,7 @@ The pitch says the shovel was moved with a fixed load and that z acceleration wa
 
 The pitch plot labels imply millivolts and g. The CSV headers themselves do not encode units, source transformation, device, applied mass, or trial conditions, and negative “voltage” values show that the data are already transformed rather than raw ADC voltage. The pitch caption’s blanket claim that three trials have R² > 0.9 is not reproducible by treating these files as trials.
 
-[`../legacy/analysis/vis.ipynb`](../legacy/analysis/vis.ipynb) has saved output `slope=-74.7089167`, `intercept=25.2884358`, and R² `0.9151767`, consistent with `calib1.csv`. Its executed state is not replayable as written: it first loads a file named `test.csv`, then later expects `voltage` and `az`, while the committed [`test.csv`](../calibration/data/raw/test.csv) has `time,weight,latitude,longitude,alt`. The maintained [`../tools/analyze_calibration.py`](../tools/analyze_calibration.py) and tests now reproduce `calib1` without modifying the evidence. They report the conventional slope 95% interval `[-76.5086, -72.9093]`; because residual lag-1 correlation is about 0.772, the documented five-lag Newey-West sensitivity interval is wider, approximately `[-77.7539, -71.6640]`. Neither interval establishes unit-to-unit or environmental validity.
+[`../legacy/analysis/vis.ipynb`](../legacy/analysis/vis.ipynb) has saved output `slope=-74.7089167`, `intercept=25.2884358`, and R² `0.9151767`, consistent with `calib1.csv`. Its executed state is not replayable as written: it first loads a file named `test.csv`, then later expects `voltage` and `az`, while the committed [`test.csv`](../calibration/data/raw/test.csv) has `time,weight,latitude,longitude,alt`. The maintained [`../tools/analyze_calibration.py`](../tools/analyze_calibration.py) and tests now reproduce `calib1` without modifying the evidence. They report the conventional slope 95% interval `[-76.5086, -72.9093]`; because residual lag-1 correlation is about 0.772, the documented five-lag Newey-West sensitivity interval is wider, approximately `[-77.7538, -71.6640]`. Neither interval establishes unit-to-unit or environmental validity.
 
 Other data limitations:
 
@@ -335,17 +345,17 @@ Multiple status values may apply. For example, `implemented; hardware-validation
 | Requirement | Evidence / implementation or validation | Status |
 |---|---|---|
 | F-ARCH-01 | `platformio.ini`, `implementation-plan.md`, and `legacy/README.md` select one Nano and exclude legacy/examples; pure core and one `src/main.cpp` adapter exist | `implemented; host-tested; compile-tested` |
-| F-BOOT-01 | SD/IMU initialization and retries, nonblocking GNSS polling/UART-silence diagnostics, and degraded pulse states exist; ADC plausibility self-test and physical GNSS transport proof remain missing | `implemented; compile-tested; hardware-validation-required` |
-| F-WGT-01 | Config selects A0/16 bits/3,300 mV; adapter averages raw ADC, core converts counts before correction, and event rows retain raw ADC/z; physical reference/range remain pending | `implemented; host-tested; compile-tested; hardware-validation-required` |
-| F-WGT-02 | Core rejects invalid/moving/unstable tare windows; adapter assumes the operator obeyed the empty-head precondition during startup | `implemented; host-tested; compile-tested; hardware-validation-required` |
-| F-WGT-03 | `-15` is preserved with `provisional` status for software/bench evaluation; field decisions remain blocked until a traceable factor is configured, and that verification alone still cannot enable auto-zero without unloaded evidence | `implemented; host-tested; compile-tested; hardware-validation-required` |
-| F-WGT-04 | Core applies the dimensionally consistent tare-relative formula and rejects invalid samples; calibration analyzer is host-tested, but adapter/physical units remain open | `implemented; host-tested; hardware-validation-required` |
+| F-BOOT-01 | Startup initializes SD, IMU, and GNSS UART; later sampling checks ADC rails and runtime diagnostics detect UART silence. There is no boot-time ADC sample, GNSS transport proof, or electrical fault injection, so the complete named self-test is not implemented | `partially-implemented; host-tested; compile-tested; hardware-validation-required` |
+| F-WGT-01 | Config selects A0, nominal 16-bit resolution, and a nominal 3,300 mV reference; the adapter averages ADC counts and rows retain raw ADC/z. Rows do not carry the measured reference, resolution, or a separate sample-validity field, and the physical input range remains pending | `partially-implemented; host-tested; compile-tested; hardware-validation-required` |
+| F-WGT-02 | Core rejects invalid/moving/unstable tare windows and the adapter requires an operator empty-head precondition, but it lacks independent unloaded evidence and does not record the required tare dispersion, sample count, time, calibration ID, or failure reason | `partially-implemented; host-tested; compile-tested; hardware-validation-required` |
+| F-WGT-03 | `-15` is preserved with `provisional` status for software/bench evaluation, but no versioned known-mass calibration satisfies the requirement. Field decisions remain blocked until a traceable factor is configured, and that verification alone still cannot enable auto-zero without unloaded evidence | `partially-implemented; host-tested; compile-tested; documented-only; hardware-validation-required` |
+| F-WGT-04 | Core applies the tare-relative formula and rejects invalid samples, but the correction remains active under a general provisional mass label without a validated operating envelope or correction-specific invalid status; adapter/physical units remain open | `partially-implemented; host-tested; hardware-validation-required` |
 | F-GPS-01 | Core validates coordinates/calendar/freshness and merges location, UTC, altitude, and satellites independently; nonblocking Serial1/TinyGPSPlus adapter captures age and exposes stream silence | `implemented; host-tested; compile-tested; hardware-validation-required` |
-| F-GPS-02 | Core represents UTC/freshness and CSV empties invalid optional fields; accuracy evidence remains one historical 6.69-distance screenshot | `implemented; host-tested; compile-tested; documented-only; hardware-validation-required` |
+| F-GPS-02 | Core represents UTC/freshness and CSV empties invalid optional fields, but the provisional accuracy target is not validated; evidence remains one historical 6.69-distance screenshot | `partially-implemented; host-tested; compile-tested; documented-only; hardware-validation-required` |
 | F-EVT-01 | Core detector and adapter implement aligned filtering, stability, trigger/release hysteresis, latch, cooldown/re-arm, finite GNSS wait, and a four-event RAM queue; overflow is counted/latched, but thresholds and reset-loss behavior need hardware validation | `implemented; host-tested; compile-tested; hardware-validation-required` |
-| F-LOG-01 | Schema-v2 formatter/adapter include device/session/sequence identity, uptime, UTC, provisional mass state, corrected signal, raw ADC/z, location, age/satellites, GPS wait/status and health; firmware/calibration/tare IDs remain incomplete | `implemented; host-tested; compile-tested; hardware-validation-required` |
-| F-LOG-02 | SD adapter checks the exact schema/boundary, flushes/closes rows, retains an event sequence across retries, and uses a new boot session to avoid restart reuse; RAM-pending loss, growing-file latency, full media, and real interruption remain untested | `implemented; host-tested; compile-tested; hardware-validation-required` |
-| F-UI-01 | Seven single-LED pulse/solid patterns and periodic serial diagnostics compile, but this external D2 deviation provides no RGB colors or distinct calibration-invalid pattern and has no operator/hardware validation | `implemented; compile-tested; hardware-validation-required` |
+| F-LOG-01 | Schema-v2 formatter/adapter include device/session/sequence identity, uptime, UTC, provisional mass state, corrected signal, raw ADC/z, location, age/satellites, GPS wait/status and health, but the required firmware, calibration, and tare IDs remain absent | `partially-implemented; host-tested; compile-tested; hardware-validation-required` |
+| F-LOG-02 | SD adapter checks the exact schema/boundary, flushes/closes rows, retains an event sequence across retries, and uses a new boot session to avoid restart reuse; full-media detection and real-card power-interruption recovery are not implemented or validated, while RAM-pending reset loss and growing-file latency remain open | `partially-implemented; host-tested; compile-tested; hardware-validation-required` |
+| F-UI-01 | Seven single-LED modes and periodic serial diagnostics compile; six modes are loop-serviced, while boot receives one setup update and may not complete its defined waveform. This external D2 deviation also has no distinct calibration-invalid pattern or operator/hardware validation | `partially-implemented; compile-tested; hardware-validation-required` |
 | F-EXP-01 | `tools/validate_events.py` validates schema-v2 rows, ranges, record identity, identical retries, and conflicting payloads; its host tests pass. Aggregation, mapping, and broader export-policy workflows remain deferred | `implemented; host-tested` |
 | F-CLS-01 | No classifier implementation | `deferred` |
 | N-ELEC-01 | Pitch block/montage and incomplete BOM only; no schematic or measurements | `documented-only; hardware-validation-required` |

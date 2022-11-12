@@ -24,6 +24,7 @@ Run the same gates as CI:
 ```sh
 make test-python
 make calibration-check
+make docs-check
 make secret-check
 make format-check
 make static-check
@@ -34,6 +35,11 @@ make build-firmware
 `make verify` runs the complete sequence. Hardware-dependent changes must also
 state the exact board, wiring, procedure, and observed result. Never describe a
 compile check or host test as physical validation.
+
+Visual documentation must label historical evidence, simulation, provisional
+units, and deferred work explicitly. Keep the framework-free demo usable by
+keyboard and at phone widths, preserve reduced-motion behavior, and do not add
+exact historical coordinates or camera metadata from the pitch archive.
 
 Keep Arduino calls in the production adapter and put deterministic domain logic
 in `lib/smart_shovel_core`. Add or update Unity tests for behavior changes. Run

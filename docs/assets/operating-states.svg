@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1020" role="img" aria-labelledby="states-title states-desc">
+  <title id="states-title">Smart Shovel operating states</title>
+  <desc id="states-desc">Three separate state systems are shown. Setup selects and updates boot mode once; six operational external LED modes are then selected each loop by a strict priority order. The event detector moves from idle through candidate, latched, release candidate, and cooldown. Each queued event moves through a GNSS and storage pipeline with bounded waiting and retries. Provisional gram thresholds and synchronous storage behavior are explicitly marked.</desc>
+  <defs>
+    <marker id="state-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#31515f"/></marker>
+    <marker id="state-arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#a63f3b"/></marker>
+    <style>
+      .bg{fill:#f7faf8}.text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.ink{fill:#17313c}.muted{fill:#5b717a}.title{font-size:34px;font-weight:780}.subtitle{font-size:17px}.section{font-size:24px;font-weight:760}.head{font-size:18px;font-weight:750}.body{font-size:14px}.small{font-size:12px}.label{font-size:11px;font-weight:760;letter-spacing:.7px}.panel{fill:#fff;stroke:#c2d0cd;stroke-width:2}.current{fill:#e8f5ef;stroke:#24755d;stroke-width:2}.provisional{fill:#fff4d8;stroke:#a86716;stroke-width:2}.warning{fill:#fff0ef;stroke:#b84a45;stroke-width:2}.neutral{fill:#f1f5f4;stroke:#82979e;stroke-width:1.8}.arrow{fill:none;stroke:#31515f;stroke-width:2.3;marker-end:url(#state-arrow)}.return{fill:none;stroke:#a63f3b;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#state-arrow-red)}.rank{fill:#17313c}.rank-text{fill:#fff;font-size:14px;font-weight:800}.pill-current{fill:#176f56}.pill-provisional{fill:#9a5b0d}.pill-validation{fill:#a63f3b}.pill-text{fill:#fff;font-size:11px;font-weight:750;letter-spacing:.7px}.priority-line{stroke:#d6e1de;stroke-width:2}.decision{fill:#fff;stroke:#31515f;stroke-width:2}.foot{fill:#eef3f2;stroke:#cbd8d5;stroke-width:1.5}
+    </style>
+  </defs>
+  <rect width="1600" height="1020" class="bg"/>
+  <g class="text">
+    <text x="44" y="56" class="title ink">Operating states: three systems, three jobs</text>
+    <text x="44" y="86" class="subtitle muted">Visible status is a priority selector; event detection and event storage have independent lifecycles.</text>
+
+    <!-- Visible status -->
+    <rect x="36" y="120" width="480" height="842" rx="22" class="panel"/>
+    <text x="62" y="158" class="section ink">A · Visible device status</text>
+    <text x="62" y="183" class="body muted">Recomputed every loop. First matching condition wins.</text>
+    <rect x="62" y="204" width="428" height="62" rx="14" class="neutral"/>
+    <text x="82" y="229" class="label ink">SETUP CAVEAT</text>
+    <text x="82" y="252" class="head ink">Boot updated once · cycle not assured</text>
+    <path d="M276 266 V291" class="arrow"/>
+
+    <line x1="89" y1="312" x2="89" y2="848" class="priority-line"/>
+
+    <g transform="translate(62 292)">
+      <rect x="0" y="0" width="428" height="78" rx="14" class="warning"/>
+      <circle cx="27" cy="39" r="18" class="rank"/><text x="27" y="44" text-anchor="middle" class="rank-text">1</text>
+      <text x="58" y="28" class="head ink">Sensor fault</text>
+      <text x="58" y="50" class="small muted">IMU unavailable or 20 consecutive IMU/ADC failures</text>
+      <text x="58" y="68" class="small" fill="#a63f3b">Five very short pulses</text>
+    </g>
+    <g transform="translate(62 382)">
+      <rect x="0" y="0" width="428" height="78" rx="14" class="current"/>
+      <circle cx="27" cy="39" r="18" class="rank"/><text x="27" y="44" text-anchor="middle" class="rank-text">2</text>
+      <text x="58" y="28" class="head ink">Calibrating</text>
+      <text x="58" y="50" class="small muted">Stable startup tare is not ready</text>
+      <text x="58" y="68" class="small" fill="#176f56">500 ms on / 500 ms off</text>
+    </g>
+    <g transform="translate(62 472)">
+      <rect x="0" y="0" width="428" height="78" rx="14" class="warning"/>
+      <circle cx="27" cy="39" r="18" class="rank"/><text x="27" y="44" text-anchor="middle" class="rank-text">3</text>
+      <text x="58" y="28" class="head ink">Storage degraded</text>
+      <text x="58" y="50" class="small muted">SD unavailable or queue-overflow latch set</text>
+      <text x="58" y="68" class="small" fill="#a63f3b">Three short pulses · overflow latch clears only on reboot</text>
+    </g>
+    <g transform="translate(62 562)">
+      <rect x="0" y="0" width="428" height="78" rx="14" class="current"/>
+      <circle cx="27" cy="39" r="18" class="rank"/><text x="27" y="44" text-anchor="middle" class="rank-text">4</text>
+      <text x="58" y="28" class="head ink">Waiting for GNSS</text>
+      <text x="58" y="50" class="small muted">At least one queued event remains in its 5 s wait</text>
+      <text x="58" y="68" class="small" fill="#176f56">125 ms on / 125 ms off</text>
+    </g>
+    <g transform="translate(62 652)">
+      <rect x="0" y="0" width="428" height="78" rx="14" class="warning"/>
+      <circle cx="27" cy="39" r="18" class="rank"/><text x="27" y="44" text-anchor="middle" class="rank-text">5</text>
+      <text x="58" y="28" class="head ink">GNSS degraded</text>
+      <text x="58" y="50" class="small muted">UART silent &gt;10 s or current full fix is not valid</text>
+      <text x="58" y="68" class="small" fill="#a63f3b">One short pulse, then long pause</text>
+    </g>
+    <g transform="translate(62 742)">
+      <rect x="0" y="0" width="428" height="78" rx="14" class="current"/>
+      <circle cx="27" cy="39" r="18" class="rank"/><text x="27" y="44" text-anchor="middle" class="rank-text">6</text>
+      <text x="58" y="28" class="head ink">Ready</text>
+      <text x="58" y="50" class="small muted">No higher-priority condition applies</text>
+      <text x="58" y="68" class="small" fill="#176f56">Solid on · not proof of field validation</text>
+    </g>
+    <rect x="62" y="850" width="428" height="80" rx="14" class="foot"/>
+    <text x="82" y="872" class="label ink">IMPORTANT</text>
+    <text x="82" y="893" class="body ink">D2 status is not the pitch's onboard RGB.</text>
+    <text x="82" y="911" class="small muted">Intermittent IMU faults below the 20-failure limit</text>
+    <text x="82" y="926" class="small muted">can coexist with Ready.</text>
+
+    <!-- Detector -->
+    <rect x="538" y="120" width="500" height="842" rx="22" class="panel"/>
+    <text x="564" y="158" class="section ink">B · Collection-event detector</text>
+    <rect x="564" y="178" width="126" height="24" rx="12" class="pill-provisional"/><text x="627" y="195" text-anchor="middle" class="pill-text">PROVISIONAL g</text>
+    <text x="706" y="195" class="small muted">Thresholds are software values, not calibrated mass.</text>
+
+    <rect x="682" y="234" width="212" height="68" rx="34" class="current"/>
+    <text x="788" y="263" text-anchor="middle" class="head ink">idle</text>
+    <text x="788" y="285" text-anchor="middle" class="small muted">armed for a collection</text>
+
+    <path d="M788 302 V352" class="arrow"/>
+    <text x="805" y="327" class="small ink">stable filtered mass ≥150 g</text>
+    <rect x="642" y="352" width="292" height="86" rx="18" class="provisional"/>
+    <text x="788" y="384" text-anchor="middle" class="head ink">candidate</text>
+    <text x="788" y="407" text-anchor="middle" class="small muted">count consecutive qualifying updates</text>
+    <text x="788" y="427" text-anchor="middle" class="small muted">delta ≤75 g and motion stable</text>
+
+    <path d="M788 438 V490" class="arrow"/>
+    <text x="805" y="469" class="small ink">fifth qualifying update · emit once</text>
+    <rect x="664" y="490" width="248" height="78" rx="18" class="current"/>
+    <text x="788" y="523" text-anchor="middle" class="head ink">latched</text>
+    <text x="788" y="547" text-anchor="middle" class="small muted">no duplicate event while load remains</text>
+
+    <path d="M788 568 V620" class="arrow"/>
+    <text x="805" y="599" class="small ink">stable filtered mass ≤50 g</text>
+    <rect x="642" y="620" width="292" height="78" rx="18" class="current"/>
+    <text x="788" y="653" text-anchor="middle" class="head ink">release_candidate</text>
+    <text x="788" y="677" text-anchor="middle" class="small muted">count five consecutive release updates</text>
+
+    <path d="M788 698 V750" class="arrow"/>
+    <text x="805" y="729" class="small ink">fifth qualifying release</text>
+    <rect x="682" y="750" width="212" height="78" rx="18" class="current"/>
+    <text x="788" y="783" text-anchor="middle" class="head ink">cooldown</text>
+    <text x="788" y="807" text-anchor="middle" class="small muted">1 s bounded interval</text>
+
+    <path d="M682 789 H616 Q598 789 598 771 V268 Q598 250 616 250 H682" class="arrow"/>
+    <text x="578" y="527" transform="rotate(-90 578 527)" text-anchor="middle" class="small ink">after 1 s → idle, even if a new load arrived</text>
+
+    <path d="M642 395 H606 Q588 395 588 377 V330 Q588 312 606 312 H682" class="return"/>
+    <text x="572" y="355" transform="rotate(-90 572 355)" text-anchor="middle" class="small" fill="#a63f3b">invalid / moving / below trigger</text>
+    <path d="M934 659 H972 Q990 659 990 641 V547 Q990 529 972 529 H912" class="return"/>
+    <text x="1008" y="594" transform="rotate(90 1008 594)" text-anchor="middle" class="small" fill="#a63f3b">invalid or release broken → latched</text>
+
+    <rect x="564" y="866" width="448" height="64" rx="14" class="foot"/>
+    <text x="584" y="892" class="label ink">PRODUCTION PRECONDITION</text>
+    <text x="584" y="909" class="small ink">Detector input begins only after four aligned 8-sample</text>
+    <text x="584" y="926" class="small ink">filters are warm from stable data.</text>
+
+    <!-- Per-event pipeline -->
+    <rect x="1060" y="120" width="504" height="842" rx="22" class="panel"/>
+    <text x="1086" y="158" class="section ink">C · Per-event GNSS / storage</text>
+    <text x="1086" y="184" class="body muted">One lifecycle instance is stored inside each RAM-queued event.</text>
+
+    <rect x="1172" y="224" width="280" height="66" rx="33" class="current"/>
+    <text x="1312" y="252" text-anchor="middle" class="head ink">ready</text>
+    <text x="1312" y="273" text-anchor="middle" class="small muted">no pending event in this slot</text>
+    <path d="M1312 290 V340" class="arrow"/>
+    <text x="1329" y="319" class="small ink">detector emits</text>
+
+    <rect x="1150" y="340" width="324" height="92" rx="18" class="current"/>
+    <text x="1312" y="372" text-anchor="middle" class="head ink">pending_gps</text>
+    <text x="1312" y="395" text-anchor="middle" class="small muted">merge best location / UTC / altitude / satellites</text>
+    <text x="1312" y="416" text-anchor="middle" class="small muted">valid full fix or 5 s deadline</text>
+    <path d="M1312 432 V484" class="arrow"/>
+    <text x="1329" y="463" class="small ink">ready for FIFO storage</text>
+
+    <rect x="1150" y="484" width="324" height="86" rx="18" class="warning"/>
+    <text x="1312" y="516" text-anchor="middle" class="head ink">ready_to_store</text>
+    <text x="1312" y="539" text-anchor="middle" class="small muted">assign sequence once · format schema v2</text>
+    <text x="1312" y="559" text-anchor="middle" class="small" fill="#a63f3b">SD write is synchronous</text>
+
+    <path d="M1150 525 H1110 Q1092 525 1092 507 V274 Q1092 256 1110 256 H1172" class="arrow"/>
+    <text x="1078" y="392" transform="rotate(-90 1078 392)" text-anchor="middle" class="small ink">O_SYNC success → completed → ready</text>
+
+    <path d="M1312 570 V622" class="return"/>
+    <text x="1329" y="600" class="small" fill="#a63f3b">write failure</text>
+    <rect x="1114" y="622" width="396" height="82" rx="18" class="warning"/>
+    <text x="1312" y="654" text-anchor="middle" class="head ink">waiting_storage_retry</text>
+    <text x="1312" y="678" text-anchor="middle" class="small muted">retain event and sequence; retry after bounded interval</text>
+    <text x="1312" y="697" text-anchor="middle" class="small muted">adapter SD re-init backoff: 30–300 s</text>
+    <path d="M1510 663 H1530 Q1546 663 1546 647 V527 Q1546 511 1530 511 H1474" class="return"/>
+    <text x="1533" y="589" transform="rotate(90 1533 589)" text-anchor="middle" class="small" fill="#a63f3b">retry → ready_to_store</text>
+
+    <path d="M1312 704 V752" class="return"/>
+    <text x="1329" y="733" class="small" fill="#a63f3b">third recorded failure</text>
+    <rect x="1150" y="752" width="324" height="82" rx="18" class="warning"/>
+    <text x="1312" y="785" text-anchor="middle" class="head ink">degraded_storage</text>
+    <text x="1312" y="809" text-anchor="middle" class="small muted">warning state; recovery can request another write</text>
+
+    <path d="M1474 793 H1522 Q1542 793 1542 773 V550 Q1542 530 1474 530" class="return"/>
+    <rect x="1086" y="866" width="452" height="64" rx="14" class="foot"/>
+    <text x="1106" y="892" class="label ink">TIMEOUT SEMANTICS</text>
+    <text x="1106" y="916" class="body ink">Keep retained gps_status; set gps_wait_timed_out=true separately.</text>
+  </g>
+</svg>

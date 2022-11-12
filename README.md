@@ -14,11 +14,36 @@ validated on the physical shovel. The historical prototype claims, evidence,
 contradictions, and current requirement statuses are traced in
 [`docs/project-requirements.md`](docs/project-requirements.md).
 
+![Historical 2022 Smart Shovel prototype laid horizontally, showing the shovel head, wooden shaft, T-handle, and exposed breadboard electronics.](docs/assets/smart-shovel-prototype-overview.webp)
+
+*Historical 2022 prototype photograph—not evidence that the refined firmware
+has run on this assembly. The exposed hardware is not weatherproof or approved
+for field use.*
+
 > **Calibration warning:** the orientation coefficient is reproducible from
 > preserved data, but its recorded units still need hardware confirmation. The
 > legacy `-15 g/mV` mass factor has no tracked raw known-mass dataset and is
 > explicitly marked `provisional` in every record until replaced through a
 > physical calibration.
+
+## How it works
+
+![Smart Shovel collection cycle: stable empty-shovel tare, filtered and orientation-corrected load measurement, event qualification, bounded GNSS evidence, schema-v2 SD record, host validation, and deferred aggregation or mapping.](docs/assets/collection-cycle.svg)
+
+The current firmware measures one stable collection event, associates the best
+available GNSS/time evidence, and synchronously appends one schema-v2 row to the
+microSD card. The host validator checks exported rows; multi-device aggregation
+and heat-map generation are future downstream work, not current firmware.
+
+[Explore the simulated collection cycle](docs/demo/index.html) or read the
+[complete visual guide](docs/visual-guide.md). The demo is deterministic
+documentation—not live telemetry or new physical test evidence. GitHub does not
+execute its JavaScript inline; run it locally with:
+
+```sh
+python3 -m http.server 8000 --directory docs
+# open http://localhost:8000/demo/
+```
 
 ## What the production firmware does
 
@@ -55,24 +80,14 @@ MVP. They are preserved under [`legacy/`](legacy/) as unvalidated experiments.
 
 ## System architecture
 
-```mermaid
-flowchart LR
-  LC["Load cell + LM358 amplifier"] -->|"A0 samples"| APP["Nano RP2040 Connect\nproduction application"]
-  IMU["Onboard LSM6DSOX"] -->|"z acceleration + motion"| APP
-  GPS["L76B GNSS"] -->|"Serial1 NMEA"| APP
-  APP --> CORE["Allocation-free core\ntare, filter, events, freshness, CSV"]
-  CORE --> SD["microSD events.csv\nO_SYNC event writes"]
-  APP --> LED["External D2 pulse-status LED"]
-  SD --> VAL["Host schema-v2 validator"]
-  VAL --> AGG["Offline aggregation / mapping"]
-```
+![Current Smart Shovel architecture showing the load-cell analog path, onboard IMU, one Nano RP2040 Connect, GNSS, event queue, synchronized microSD logger, external D2 status LED, host validator, and separately labeled historical and deferred concepts.](docs/assets/system-architecture.svg)
 
 The single-controller architecture follows the pitch's interaction diagram and
 the only integrated 2022 sketch. The historical BOM lists two Nano Connect
 boards, while the repository photographs contain board-format assemblies that
 are consistent with one Nano and an L76B GNSS carrier but do not establish the
-complete architecture. The unfinished
-master/slave sketches never implemented a usable protocol. That ambiguity is
+complete architecture. The unfinished master/slave sketches never implemented
+a usable protocol. That ambiguity is
 resolved reversibly: one controller is production, while the dual-board work
 remains available in legacy history.
 
@@ -123,7 +138,9 @@ tools/analyze_calibration.py reproducible standard-library calibration CLI
 tools/validate_events.py    schema-v2 export validation before aggregation
 examples/hardware/           isolated bench diagnostics, not production
 legacy/                      archived sketches, experiments, and stale notebook
-docs/                        requirements traceability and implementation gates
+docs/assets/                 optimized photographs and static SVG explanations
+docs/demo/                   framework-free interactive simulated collection cycle
+docs/                        visual guide, requirements traceability, and gates
 .github/workflows/ci.yml     host tests, analysis, static checks, and board build
 ```
 
@@ -170,6 +187,7 @@ make build-firmware
 make format-check
 make static-check
 make secret-check
+make docs-check
 ```
 
 `make verify` runs the complete non-hardware gate used by CI. The firmware build
@@ -308,6 +326,7 @@ hardware before field use.
 
 The firmware creates `events.csv`. It writes the header only for a new/empty
 file and refuses to append if an existing nonempty file has another header.
+The row below is a deterministic synthetic example, not field telemetry:
 
 ```csv
 schema_version,device_id,boot_session_id,event_sequence,event_uptime_ms,timestamp_utc,mass_g,mass_calibration_status,corrected_signal_mv,raw_adc,accel_z_g,latitude,longitude,altitude_m,gps_age_ms,satellites,gps_status,gps_wait_timed_out,system_health
@@ -380,13 +399,19 @@ confirm the configured polarity before power-up.
 
 | Pattern | Meaning | Firmware response |
 | --- | --- | --- |
-| Two short pulses, then pause | Booting | Peripheral initialization in progress |
+| Defined as two short pulses, then pause | Booting | Selected during setup; the full cycle is not currently guaranteed |
 | Slow blink | Calibrating | Waiting for the empty, stable startup tare |
 | Solid on | Ready | IMU, fresh full GNSS fix, and SD currently available |
 | Fast blink | Event waiting for GNSS | Nonblocking fix/timestamp wait, capped at 5 s |
 | One short pulse, then long pause | GNSS degraded | Continues sensing and records retained evidence plus timeout flag |
 | Three short pulses, then pause | Storage degraded or event queue overflow | Retries SD; retains up to four pending events |
 | Five very short pulses, then pause | ADC/IMU sensor fault | Suppresses weight events on rail-adjacent ADC values or invalid orientation data; retries IMU after 5 s |
+
+Boot indication has a software-servicing limitation: setup selects the boot mode
+and calls the LED renderer once, then the loop selects an operational mode. The
+double-pulse waveform is defined in code but is not guaranteed to complete on a
+device. The other six modes are serviced on each completed main-loop iteration;
+all physical visibility and timing still require hardware validation.
 
 Serial output provides the exact state/reason every five seconds and on startup
 tare, events, retries, recoveries, dropped events, and writes. A queue overflow
