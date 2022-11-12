@@ -3,7 +3,14 @@ A smart shovel programmed using C++ on an Arduino Nano for controlling a GPS-pow
 
 ## Built Using
 ### C++
+C++ was used for all the sensory and control functionalities of the Arduino Nano. 
+
 ### Arduino Nano
+The Arduino Nano acted as the central hub for collecting and storing information gathered by the shovel about its surrounding environment.
+
+## Demo
+<img src="https://github.com/paulyan678/smart-shovel/blob/main/docs/img_1.png">
+<img src="https://github.com/paulyan678/smart-shovel/blob/main/docs/img_2.png">
 
 # License
 This project is licensed under the MIT License - see the <a href="https://github.com/paulyan678/smart-shovel/blob/main/LICENSE">LICENSE</a> file for details.
