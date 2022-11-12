@@ -1,0 +1,14 @@
+{
+  "name": "smart_shovel_core",
+  "version": "0.1.0",
+  "description": "Allocation-free, Arduino-independent domain logic for the Smart Shovel firmware",
+  "keywords": [
+    "calibration",
+    "event-detection",
+    "gps",
+    "csv"
+  ],
+  "license": "MIT",
+  "frameworks": "*",
+  "platforms": "*"
+}

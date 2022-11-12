@@ -1,0 +1,2 @@
+# PlatformIO supplies the pinned embedded and native build/test environments.
+platformio==6.1.18

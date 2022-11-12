@@ -1,0 +1,4 @@
+# Preserve the imported evidence byte-for-byte on every platform. The
+# calibration tests assert the SHA-256 of calib1.csv.
+calibration/data/raw/** -text
+legacy/analysis/vis.ipynb -text

@@ -1,1 +1,38 @@
+# Operating-system and editor files
 **/.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# PlatformIO and native build outputs
+.pio/
+.cache/
+build/
+cmake-build-*/
+compile_commands.json
+
+# Python environments, caches, and coverage
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Generated calibration outputs; calibration/data/raw remains tracked.
+calibration/generated/
+calibration/output/
+calibration/outputs/
+
+# Local credentials. Keep the example headers tracked.
+**/secrets.hpp
+!**/secrets.example.hpp
+include/smart_shovel/device_config.hpp
+.env
+.env.*
+!.env.example

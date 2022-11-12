@@ -1,0 +1,29 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{c,cc,cpp,cxx,h,hh,hpp,hxx,ino}]
+indent_size = 2
+
+[*.py]
+indent_size = 4
+
+[*.ini]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+# These files are preserved evidence. Editors must not normalize their bytes.
+[calibration/data/raw/**]
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+[legacy/analysis/vis.ipynb]
+insert_final_newline = unset
+trim_trailing_whitespace = unset

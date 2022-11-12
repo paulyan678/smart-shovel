@@ -109,10 +109,10 @@ void loop()
 // } data;
 
 
-// //#include "arduino_secrets.h" 
-// ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
-// char ssid[] = "hina";           // your network SSID (name)
-// char pass[] = "asdflkjasdflkj"; // your network password (use for WPA, or use as key for WEP)
+// // Credentials were removed from this archived sketch. If reviving it, use an
+// // ignored local secrets.hpp based on the repository's example configuration.
+// char ssid[] = WIFI_SSID;
+// char pass[] = WIFI_PASSWORD;
 // __decltype(1) keyIndex = 0;               // your network key index number (needed only for WEP)
 
 // __decltype(1) _x = 2;
@@ -365,4 +365,3 @@ void loop()
 //     }
 
 // }
-

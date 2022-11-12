@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include <WiFiNINA.h>
+#include "secrets.hpp"
 #include "src/debug/led.hpp"
 #include "src/imu/input.hpp"
 #include "src/gps/gps.hpp"
@@ -110,10 +111,10 @@ static void update_env()
 
 
 
-//#include "arduino_secrets.h" 
-///////please enter your sensitive data in the Secret tab/arduino_secrets.h
-char ssid[] = "hina";           // your network SSID (name)
-char pass[] = "asdflkjasdflkj"; // your network password (use for WPA, or use as key for WEP)
+// Copy secrets.example.hpp to secrets.hpp and set local values. The real 2022
+// credentials were removed from this archived experiment and must be rotated.
+char ssid[] = WIFI_SSID;
+char pass[] = WIFI_PASSWORD;
 __decltype(1) keyIndex = 0;               // your network key index number (needed only for WEP)
 
 __decltype(1) _x = 2;

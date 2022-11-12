@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Test, analyze, and compile
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install pinned development dependencies
+        run: make setup
+
+      - name: Install static-analysis tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends clang-format cppcheck
+
+      - name: Run Python tests
+        run: make test-python
+
+      - name: Recompute calibration evidence
+        run: make calibration-check
+
+      - name: Scan current tree for credentials
+        run: make secret-check
+
+      - name: Check C++ formatting
+        run: make format-check
+
+      - name: Run C++ static analysis
+        run: make static-check
+
+      - name: Run native Unity tests
+        run: make test-native
+
+      - name: Compile Nano RP2040 Connect firmware
+        run: make build-firmware
