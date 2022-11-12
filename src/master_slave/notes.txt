@@ -1,0 +1,8 @@
+Master slave notes:
+
+M (ground) -> S (Ground)
+
+M (A5, SCL for I2C, top right) -> S (A5, SCL for I2C, this is ADC5 in nano)
+
+M (A5, SDA for I2C, top right) -> S (A5, DSA for I2C, htis is ADC4 in nano)
+
