@@ -5,10 +5,12 @@ a structured waste-measurement event. An Arduino Nano RP2040 Connect combines
 load sensing, inertial orientation correction, GNSS evidence, and microSD
 logging in one deterministic firmware pipeline.
 
-The project demonstrates production-minded embedded engineering: clear hardware
-boundaries, allocation-free domain logic, testable state machines, explicit data
-quality, failure recovery, reproducible calibration analysis, and a pinned CI
-toolchain.
+The Arduino-independent core has host tests, and CI builds the target firmware.
+Mass measurements remain provisional: the preserved orientation capture does not
+establish grams-per-millivolt accuracy. The
+[hardware validation procedure](docs/hardware-validation.md) and
+[known-mass evaluator](calibration/README.md#held-out-known-mass-evaluation)
+define the measurements needed before enabling verified mass calibration.
 
 ![Smart Shovel prototype laid horizontally, showing the shovel head, wooden shaft, T-handle, and electronics.](docs/assets/smart-shovel-prototype-overview.webp)
 

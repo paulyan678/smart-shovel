@@ -133,3 +133,40 @@ python3 -m unittest discover -s tools/tests -v
 7. Use explicit unloaded tare in the maintained firmware. A bounded automatic
    zero-maintenance algorithm is also host-tested as an extension point for a
    future adapter with an independent stable-and-unloaded signal.
+
+## Held-out known-mass evaluation
+
+Copy [known-mass-template.csv](known-mass-template.csv) for a new device. The
+template deliberately contains no sample measurements. Log actual stable-window
+observations after applying the documented tare/orientation correction in mV.
+Keep original ADC/IMU traces and a capture manifest alongside the derived CSV:
+device/hardware identifiers, firmware revision, ADC reference and units, tare
+and correction coefficients, acquisition times, traceable mass identities, and
+source-file hashes. Historical `known.csv` contains computed grams, so it is not
+a substitute for raw signal paired with independently known masses.
+
+Before collecting test data, assign whole acquisition runs to `train` or `test`
+and choose the maximum acceptable RMSE and absolute error for the intended use.
+Use at least two training runs and one untouched test run, each split covering
+zero and two or more nonzero masses at multiple orientations. Randomize the
+loading/unloading sequence; do not split neighboring samples from one run across
+training and test. Evaluate different devices separately.
+
+```sh
+python3 tools/evaluate_known_mass.py --input measurements.csv \
+  --max-rmse-g 10 --max-error-g 25 > mass-evaluation.json
+```
+
+The limits above are an example, not a certified accuracy specification. The
+tool fits slope and intercept using only training runs, then reports held-out
+bias, RMSE, worst error, and per-run/per-orientation errors. It rejects missing
+splits, run leakage, invalid values and insufficient load/orientation coverage.
+Exit status is 0 within the supplied limits, 1 outside them, and 2 for invalid
+input. The report includes the immutable input hash and never changes firmware
+configuration or its calibration-status flag.
+
+A passing report alone does not verify physical provenance, temperature/power
+robustness, creep or saturation. Review the capture evidence and complete the
+[hardware procedure](../docs/hardware-validation.md) before setting
+`SMART_SHOVEL_MASS_CALIBRATION_VERIFIED`. The evaluator's analytical test data is
+only a known-answer software fixture, not a reported hardware result.
